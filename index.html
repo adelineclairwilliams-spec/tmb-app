@@ -1017,6 +1017,16 @@ const TEX={
     {n:"C1) Tibialis raise",s:"4kg · 3×10",c:"Heels planted, pull the toes up toward the shin against load.",y:"tibialis raise tutorial"},
     {n:"C2) Farmers carry",s:"8kg · 3×25m",c:"Tall posture, braced core, steady even steps.",y:"farmers carry tutorial form"}
   ],
+  fullB:[
+    {n:"A1) Heel-elevated goblet squat",s:"10kg · 3×10",c:"Heels on a plate, weight at the chest, sit straight down and drive up.",y:"heel elevated goblet squat tutorial"},
+    {n:"A2) Back extension",s:"BW · 3×10",c:"Hinge at the hips, squeeze the glutes at the top, don't overarch.",y:"back extension exercise proper form"},
+    {n:"B1) Single-leg calf raise",s:"3×10",c:"Rise tall, control the lower, keep the ankle steady.",y:"single leg calf raise tutorial"},
+    {n:"B2) Chest press",s:"20kg · 3×10",c:"Ribs down, press smoothly, control the return.",y:"machine chest press proper form"},
+    {n:"C1) Face pull",s:"15kg · 3×12",c:"Pull to the forehead, elbows high, squeeze the rear delts.",y:"cable face pull tutorial"},
+    {n:"C2) Pallof press",s:"Yellow band",c:"Band from the side, press straight out and resist the twist — brace the core.",y:"pallof press anti rotation tutorial"},
+    {n:"Cable curl (finisher)",s:"7.5kg · 3×10",c:"Elbows pinned to your sides, curl up and control the lower.",y:"cable bicep curl tutorial"},
+    {n:"Rope tricep push-down (finisher)",s:"7.5kg · 3×10",c:"Elbows tucked, spread the rope apart at the bottom.",y:"rope tricep pushdown tutorial"}
+  ],
   circuit:[
     {n:"Wall squat",s:"3×6-8",c:"Back flat on the wall, thighs to parallel.",y:"wall squat exercise tutorial"},
     {n:"Squat with band",s:"4×12",c:"Band round the knees — push them out on every rep.",y:"banded squat tutorial"},
@@ -1121,7 +1131,8 @@ function rTraining(){
   const pill=(bg,co,txt)=>`<span style="font-size:9.5px;font-weight:700;padding:2px 9px;border-radius:20px;background:${bg};color:${co}">${txt}</span>`;
   const PROGS=[
     {icon:"🔥",title:"Warm-up",sub:"do first, every session",arr:TEX.warmup},
-    {icon:"💪",title:"PT · Full Body A",sub:"main strength session",note:"Single-leg, press and carry work that doubles as descent/eccentric prep. Vanessa: scale the DB press and grip-heavy moves for the elbow.",arr:TEX.fullA},
+    {icon:"💪",title:"PT · Full Body A",sub:"PT session 1",note:"Single-leg, press and carry work that doubles as descent/eccentric prep. Vanessa: scale the DB press and grip-heavy moves for the elbow.",arr:TEX.fullA},
+    {icon:"💪",title:"PT · Full Body B",sub:"PT session 2",note:"Second session in the PT rotation — squat, hinge, press, pull and anti-rotation core, with an arm finisher. Vanessa: scale the chest press and grip-heavy moves, keep it pain-free for the elbow.",arr:TEX.fullB},
     {icon:"⛰",title:"Strength + descent prep",sub:"knee-saving eccentric work",note:"The strength that protects your knees on long descents — eccentric step-downs, tempo squats, single-leg and glute-med work, plus circuit staples.",arr:TEX.descent.concat(TEX.circuit)},
     {icon:"🧳",title:"At-home / travel bodyweight",sub:"no-gym days",arr:TEX.travel},
     {icon:"🦶",title:"Physio 1 · Ankle &amp; Foot",sub:"to 7 Jul, then optional",arr:TEX.ankle},
@@ -1134,11 +1145,6 @@ function rTraining(){
   ];
   return`<div class="ptitle">🏋️ TMB Training Plan</div>
 <div style="font-size:12.5px;color:var(--txM);line-height:1.6;margin-bottom:12px">Addy's full cycle-adapted training plan, imported from the separate training app as a read-only reference. Hard efforts are timed to your highest-energy phases; easy weeks fall on your period, the New Caledonia holiday and the taper. <strong>Vanessa sees all of it</strong> (her elbow + ankle prehab is in the exercise library). Tap any section to open it.</div>
-<div class="g3" style="margin-bottom:12px">
-  <div class="sc"><div class="sv">${tDaysTrek()}</div><div class="sl">Days to trek · 13 Sep</div></div>
-  <div class="sc"><div class="sv">${cw.n}/13</div><div class="sl">Current week</div></div>
-  <div class="sc"><div class="sv" style="font-size:13px;line-height:1.2">🎒 ${esc(cw.pack)}</div><div class="sl">This week's pack</div></div>
-</div>
 <div class="card cp" style="margin-bottom:12px;border-left:3px solid ${TDRIVE[cw.drive].col}">
   <div style="font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--txL);margin-bottom:7px">THIS WEEK · ${tDR(cw)}</div>
   <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px">
@@ -1148,6 +1154,8 @@ function rTraining(){
   </div>
   <div style="font-size:12.5px;line-height:1.5;color:var(--txM)">${cw.focus}</div>
 </div>
+<div style="font-size:11px;font-weight:600;color:var(--txL);margin:4px 0 6px;letter-spacing:.5px">EXERCISE LIBRARY <span style="font-weight:400;text-transform:none">· ▶ video on every move</span></div>
+${PROGS.map(p=>`<details class="sec"><summary>${p.icon} ${p.title}${p.sub?` <span style="font-weight:400;color:var(--txL);font-size:11px">· ${esc(p.sub)}</span>`:""}</summary><div class="secbody">${p.note?`<div style="font-size:11.5px;font-style:italic;color:var(--txL);background:var(--surB);border-radius:8px;padding:8px 10px;margin-bottom:6px;line-height:1.5">${esc(p.note)}</div>`:""}${tExRows(p.arr)}</div></details>`).join("")}
 <details class="sec"><summary>❤️ Heart-rate zones</summary><div class="secbody">
   <div style="font-size:11px;color:var(--txL);line-height:1.5;margin-bottom:8px">Provisional (age 36, resting 49, est. max ~183, Karvonen). Clonidine lowers and Vyvanse raises working HR — lead with effort + the talk test.</div>
   ${TZONES.map(z=>`<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--bor)"><div style="width:6px;align-self:stretch;border-radius:4px;background:${z.col};flex-shrink:0"></div><div style="flex:1;min-width:0"><strong style="font-size:12.5px">${esc(z.n)}</strong><div style="font-size:11px;color:var(--txL);line-height:1.35">${esc(z.d)}</div></div><div style="font-weight:800;color:${z.col};white-space:nowrap;flex-shrink:0">${esc(z.bpm)}</div></div>`).join("")}
@@ -1156,9 +1164,9 @@ function rTraining(){
   <div style="font-size:11px;color:var(--txL);line-height:1.5;margin-bottom:8px">Hardest efforts land in your highest-energy phases; easy weeks fall on your period, holiday and taper. Period anchored ~13 Jul, ~10 Aug, ~7 Sep. The calendar is the plan — your body + WHOOP recovery are the veto.</div>
   ${TCYCLE.map(p=>{const c=TCS[p.ph];return`<div style="background:${c.bg};border:1px solid ${c.bd};color:${c.tx};border-radius:10px;padding:10px 12px;margin-bottom:7px"><div style="display:flex;align-items:center;gap:8px"><span style="width:9px;height:9px;border-radius:50%;background:${c.dot};flex-shrink:0"></span><strong style="font-size:12.5px">${esc(p.hd)}</strong><span style="margin-left:auto;font-size:10px;font-weight:800;color:${c.dot};white-space:nowrap">${esc(p.push)}</span></div><div style="font-size:11.5px;line-height:1.45;margin-top:4px;opacity:.92">${esc(p.txt)}</div></div>`;}).join("")}
 </div></details>
-<div style="font-size:11px;font-weight:600;color:var(--txL);margin:15px 0 6px;letter-spacing:.5px">13-WEEK PLAN</div>
-${TWEEKS.map((w,i)=>{const isCur=i===ci,past=w.end<today&&!isCur,d=TDRIVE[w.drive],c=TCS[tCyc(w)];
-  return`<details class="sec"${isCur?" open":""}><summary>${w.travel?"🧳":w.flex?"🔀":"📅"} Week ${w.n} · ${tDR(w)}${isCur?` <span style="color:var(--for);font-weight:700">· NOW</span>`:past?` <span style="color:var(--txL);font-weight:400">· done</span>`:""}</summary><div class="secbody">
+<div style="font-size:11px;font-weight:600;color:var(--txL);margin:15px 0 6px;letter-spacing:.5px">TRAINING WEEKS AHEAD</div>
+${TWEEKS.filter(w=>w.end>=today).map(w=>{const isCur=today>=w.start&&today<=w.end,d=TDRIVE[w.drive],c=TCS[tCyc(w)];
+  return`<details class="sec"${isCur?" open":""}><summary>${w.travel?"🧳":w.flex?"🔀":"📅"} ${tDR(w)}${isCur?` <span style="color:var(--for);font-weight:700">· THIS WEEK</span>`:""}</summary><div class="secbody">
   <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">
     ${pill(d.col,"#fff","🔥 "+d.lbl)}
     ${pill(TPH[w.ph.split("→")[0]].dot+"22","var(--txM)",esc(TPH[w.ph.split("→")[0]].lbl))}
@@ -1171,8 +1179,6 @@ ${TWEEKS.map((w,i)=>{const isCur=i===ci,past=w.end<today&&!isCur,d=TDRIVE[w.driv
   ${w.targets.map(tg=>`<div style="display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid var(--bor)"><div style="width:26px;height:26px;border-radius:7px;background:var(--surB);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">${tg.icon}</div><div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:600">${esc(tg.title)}</div><div style="font-size:11px;color:var(--txL)">${esc(tg.meta)}</div></div><div style="font-size:12px;font-weight:800;color:var(--forM);white-space:nowrap;flex-shrink:0">×${tg.count||1}</div></div>`).join("")}
   ${w.hike?`<div class="nbox" style="background:${w.hike.easy?"#F0EBFA":"#FBF3D6"};border:1px solid ${w.hike.easy?"#D6C9F0":"#F0DCA8"};margin-top:9px;margin-bottom:0"><div class="nh" style="color:${w.hike.easy?"#43307A":"#5C4410"}">${w.hike.title.startsWith("⭐")?"⭐":w.hike.easy?"🌿":"🏔"} ${esc(w.hike.title.replace("⭐ ",""))}</div><div style="font-size:11px;color:${w.hike.easy?"#6E5E96":"#8A7530"};margin:2px 0 4px">${esc(w.hike.meta)}</div><div class="nb2" style="color:var(--txM)">${esc(w.hike.det)}</div></div>`:""}
 </div></details>`;}).join("")}
-<div style="font-size:11px;font-weight:600;color:var(--txL);margin:16px 0 6px;letter-spacing:.5px">EXERCISE LIBRARY <span style="font-weight:400;text-transform:none">· ▶ video on every move</span></div>
-${PROGS.map(p=>`<details class="sec"><summary>${p.icon} ${p.title}${p.sub?` <span style="font-weight:400;color:var(--txL);font-size:11px">· ${esc(p.sub)}</span>`:""}</summary><div class="secbody">${p.note?`<div style="font-size:11.5px;font-style:italic;color:var(--txL);background:var(--surB);border-radius:8px;padding:8px 10px;margin-bottom:6px;line-height:1.5">${esc(p.note)}</div>`:""}${tExRows(p.arr)}</div></details>`).join("")}
 <div class="empty" style="padding:14px 0 4px">Read-only mirror of the training app · TMB departs 13 Sep 2026</div>`;
 }
 
