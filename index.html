@@ -574,13 +574,13 @@ const REFRESH={
   1:{lunch:"No packed lunch today: buy it in Les Houches or Chamonix before you ride up. Trail stops are sparse, so carry enough.",buy:"Buy a full picnic in Les Houches before riding up (Spar + boulangerie); nothing to buy at Bellevue top.",stops:[
     {n:"Café at Bellevue top station",at:"at the top (0 km)",f:"Coffee + snack with a Mont Blanc view before you set off",o:"While the lift runs, confirm",meal:false},
     {n:"La Rioule, Col de Voza",at:"~1.5 km / 20–30 min",f:"Espresso + a slice of tarte, or a quick omelette (the one real stop, don't linger)",o:"Seasonal, confirm",meal:true}]},
-  2:{lunch:"Buy lunch in Les Contamines at the start, or eat a hot lunch at one of the refuges below (all do soup, omelettes, tarts).",buy:"Buy trail food in Les Contamines at the start (boulangerie + small supermarket). Last proper shop until Courmayeur.",stops:[
+  2:{lunch:"Nant Borrant (early) and the Croix du Bonhomme (at the high point) do hot lunches on your date — but ⚠️ Refuge de la Balme is CLOSED from 14 Sep, so carry enough water/food for the long climb to the cols, or buy lunch in Les Contamines before leaving.",buy:"Buy trail food in Les Contamines at the start (boulangerie + small supermarket). Last proper shop until Courmayeur.",stops:[
     {n:"Refuge de Nant Borrant",at:"~6.5 km / ~1.5 h",f:"Famous apple & blueberry tarts, omelettes, soup",o:"Likely open, confirm",meal:true},
-    {n:"Refuge de la Balme",at:"~9 km / ~2.5 h",f:"Soup + tarte, the last food and water before the cols",o:"Likely open, confirm",meal:true},
-    {n:"Refuge de la Croix du Bonhomme",at:"~14.5 km / ~4.5 h",f:"Hot soup + gratin at the high point, sells picnic packs",o:"Borderline late-Sept (FFCAM often shuts ~20 Sep), confirm",meal:true}]},
+    {n:"Refuge de la Balme",at:"~9 km / ~2.5 h",f:"Soup + tarte (normally the last food/water before the cols)",o:"⚠️ CLOSED on your day — 2026 season ends 13 Sep, you pass on 14 Sep. Carry enough water/food to the Croix du Bonhomme",meal:true},
+    {n:"Refuge de la Croix du Bonhomme",at:"~14.5 km / ~4.5 h",f:"Hot soup + gratin at the high point, sells picnic packs",o:"Open to 20 Sep 2026 (so open on 14 Sep) — ⚠️ but a major FFCAM renovation is planned; confirm it's running before relying on it",meal:true}]},
   3:{lunch:"Packed lunch ordered from Les Chambres du Soleil (24€, in the balance). If you skip it, the Italian rifugi below are superb hot-lunch stops. Note: the low/navette finish misses Maison Vieille.",buy:"Order the Chambres du Soleil packed lunch the night before, or carry supplies from Les Contamines. No grocery until Courmayeur.",stops:[
     {n:"Refuge des Mottets",at:"~7 km / ~2 h",f:"Beloved dairy-farm hut: cheese dishes + tart, coffee before Col de la Seigne",o:"Open to 20 Sep 2026, shut after",meal:true,route:"All routes"},
-    {n:"Rifugio Elisabetta",at:"~13–14 km / ~5 h",f:"Signature polenta or fresh pasta, takeaway sandwiches (first Italian rifugio)",o:"Closes ~mid-Sept, borderline, confirm",meal:true,route:"All routes"},
+    {n:"Rifugio Elisabetta",at:"~13–14 km / ~5 h",f:"Signature polenta or fresh pasta, takeaway sandwiches (first Italian rifugio)",o:"Open on 15 Sep (2026 season runs to ~end Sept / early Oct)",meal:true,route:"All routes"},
     {n:"Cabane du Combal (Lac Combal)",at:"~15–16 km",f:"Reliable coffee + food by the turquoise lake, and the navette/taxi pick-up point",o:"Likely open, confirm",meal:true,route:"All routes (navette leaves here)"},
     {n:"Rifugio Maison Vieille (Col Chécrouit)",at:"~19–20 km",f:"Polenta concia / tagliatelle ai funghi, a trip highlight",o:"Likely open, confirm",meal:true,route:"Scenic Mont Favre route only, not the valley/navette finishes"}]},
   5:{lunch:"Buy lunch in Courmayeur before leaving, or eat a hot lunch at Rifugio Bertone. Bonatti is your dinner, not a lunch stop.",buy:"Buy this day's trail food in Courmayeur before leaving (Via Roma shops + bakery). No shop from Bonatti onward.",stops:[
@@ -588,7 +588,7 @@ const REFRESH={
     {n:"Rifugio Bonatti",at:"end, ~12 km",f:"Your dinner stop; pre-order the Day 6 packed lunch (~€14) here the night before",o:"Open to 30 Sep",meal:false}]},
   6:{lunch:"Packed lunch pre-ordered at Bonatti (~€14). Or a hot soup lunch at Rifugio Elena before the col.",buy:"No shop en route until La Fouly: carry the packed lunch pre-ordered at Bonatti. Restock at the La Fouly shop on arrival.",stops:[
     {n:"Chalet Val Ferret (Arnouva)",at:"~6–7 km / ~2 h",f:"Outstanding hot chocolate + cake, lattes, sandwiches",o:"Open",meal:false},
-    {n:"Rifugio Elena",at:"~8–9 km / ~3 h",f:"Hearty bean soup, the last refuge before the col",o:"Borderline late-Sept (shut ~29 Sep in 2025), confirm",meal:true},
+    {n:"Rifugio Elena",at:"~8–9 km / ~3 h",f:"Hearty bean soup, the last refuge before the col",o:"Open on 18 Sep (2026 season ~15 Jun to end Sept)",meal:true},
     {n:"Alpage de La Peule",at:"~1 h past the col (Swiss side)",f:"Fresh alpage cheese & dairy, the day's tastiest, most local stop",o:"Likely open, confirm",meal:true}]},
   7:{lunch:"Packed lunch from Maya-Joie, or a proper lunch in Champex on arrival (Le Cabanon).",buy:"Provision at the La Fouly shop at the start (by the car park/campsite). Nothing on trail is dependable until Champex.",stops:[
     {n:"Riverside ice-cream / drinks hut",at:"between La Fouly and Praz-de-Fort",f:"Ice cream + cold drinks on a warm afternoon",o:"Summer pop-up, may be shut, confirm",meal:false},
@@ -605,7 +605,7 @@ const REFRESH={
     {n:"Refuge du Lac Blanc",at:"~6 km / ~3.5 h (after the ladders)",f:"⭐ Drink + slice of tart, or a hot potato/cheese plate on the Mont Blanc terrace. Cash only",o:"Open June–late Sept, your most reliable stop today",meal:true},
     {n:"La Flégère buvette",at:"~9–10 km / ~5 h",f:"Lift-station self-service",o:"Gondola shuts 13 Sep 2026, assume CLOSED",meal:false},
     {n:"Le Brévent, Le Panoramic",at:"~14 km / ~7 h",f:"Panoramic restaurant",o:"Lift-tied and closed for your dates, CLOSED",meal:false},
-    {n:"Refuge de Bellachat",at:"~16 km / ~8 h (on the descent)",f:"Omelette + blueberry tartlet, the best real meal on the way down",o:"Borderline mid-Sept, confirm",meal:true}]}
+    {n:"Refuge de Bellachat",at:"~16 km / ~8 h (on the descent)",f:"Omelette + blueberry tartlet, the best real meal on the way down",o:"Open to 27 Sep 2026 (so open on 22 Sep)",meal:true}]}
 };
 // Key waypoints passed on the planned route, in order (per stage day). Rest day (4) has none.
 const VIA={
