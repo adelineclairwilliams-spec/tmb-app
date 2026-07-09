@@ -1,0 +1,945 @@
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#EDE8DF;--sur:#FDFAF5;--surB:#F4EFE5;--for:#1C3828;--forM:#2A5040;--amb:#A86B18;--ambL:#C9943A;--sto:#7A7268;--txt:#18180E;--txM:#4A4840;--txL:#78746C;--bor:#DCD3BF;--fr:#2B4F8B;--it:#9B2525;--ch:#B51A2F;--ok:#3D7A5A;--warn:#B54A0A}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;font-size:14px}
+button,input,textarea,select{font-family:'DM Sans',sans-serif;cursor:pointer}
+.serif{font-family:'Cormorant Garamond',serif}
+
+/* HEADER */
+.hdr{background:var(--for);padding:16px 16px 0;position:relative;overflow:hidden}
+.mtn{position:absolute;bottom:0;left:0;right:0;height:46px;opacity:.1;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 50'%3E%3Cpolygon points='0,50 60,20 140,38 260,4 380,26 470,9 570,24 680,6 800,22 800,50' fill='white'/%3E%3C/svg%3E") center bottom/cover no-repeat}
+.hdr-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.hdr-tag{color:var(--ambL);font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px}
+.hdr-title{font-family:'Cormorant Garamond',serif;color:#fff;font-size:25px;font-weight:500;line-height:1.1}
+.hdr-sub{color:rgba(255,255,255,.5);font-size:11px;margin-top:2px}
+.hdr-cnt{text-align:right}
+.hdr-num{font-family:'Cormorant Garamond',serif;font-size:36px;color:#fff;font-weight:500;line-height:1}
+.hdr-lbl{color:rgba(255,255,255,.5);font-size:10px}
+.pbar{height:3px;background:rgba(255,255,255,.15);border-radius:2px}
+.pfill{height:100%;background:var(--ambL);border-radius:2px}
+nav{display:flex;overflow-x:auto;gap:1px;padding-top:8px}
+nav::-webkit-scrollbar{display:none}
+.nb{background:transparent;border:none;padding:7px 10px;border-radius:7px 7px 0 0;color:rgba(255,255,255,.55);font-size:11px;white-space:nowrap;display:flex;align-items:center;gap:4px;flex-shrink:0;transition:all .15s}
+.nb.on{background:var(--bg);color:var(--for);font-weight:500}
+.nb:hover:not(.on){color:rgba(255,255,255,.9)}
+
+/* MAIN */
+main{padding:13px;max-width:800px;margin:0 auto}
+.ptitle{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;margin-bottom:12px}
+.card{background:var(--sur);border:1px solid var(--bor);border-radius:12px;margin-bottom:10px}
+.cp{padding:14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.sc{background:var(--sur);border:1px solid var(--bor);border-radius:10px;padding:12px}
+.sv{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--for)}
+.sl{font-size:10.5px;color:var(--txL);margin-top:2px}
+.mbar{height:5px;background:var(--bor);border-radius:3px;margin:5px 0 4px}
+.mfil{height:100%;border-radius:3px}
+.shdr{padding:11px 14px;border-bottom:1px solid var(--bor);display:flex;justify-content:space-between;align-items:center}
+
+/* STAGES */
+.srow{width:100%;background:transparent;border:none;padding:12px 14px;text-align:left;display:flex;align-items:center;gap:10px}
+.dbadge{width:27px;height:27px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:600;flex-shrink:0}
+.sbadge{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:600;color:#fff}
+.dcell{background:var(--surB);border-radius:7px;padding:8px 10px}
+.dcell .l{font-size:10px;color:var(--txL)}
+.dcell .v{font-size:13px;font-weight:500;margin-top:1px}
+.nbox{border-radius:8px;padding:10px;margin-bottom:8px}
+.nbox .nh{font-size:10.5px;font-weight:600;margin-bottom:4px}
+.nbox .nb2{font-size:12px;line-height:1.55;color:var(--txM)}
+.mrow{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--bor);align-items:flex-start}
+.mrow:last-child{border-bottom:none}
+.mico{width:14px;height:14px;border-radius:3px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff}
+.warn-box{background:#FFF4EC;border:1px solid #E8A06A;border-radius:8px;padding:9px 11px;margin-bottom:7px}
+.warn-box .w{font-size:11.5px;color:var(--warn);line-height:1.6}
+
+/* STAYS */
+.paid-badge{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:600;white-space:nowrap}
+.paid{background:#E6F3EC;color:var(--ok)}
+.owing{background:#FFF4E0;color:var(--amb)}
+.cash{background:#FFF0F0;color:var(--it)}
+
+/* GEAR */
+.gi{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid var(--bor);cursor:pointer}
+.gi:last-child{border-bottom:none}
+.ck{width:17px;height:17px;border:2px solid var(--bor);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.ck.on{background:var(--for);border-color:var(--for)}
+.ck.on::after{content:'✓';color:#fff;font-size:10px;font-weight:700}
+.owned-tag{font-size:9px;padding:1px 6px;border-radius:4px;font-weight:600;background:#E6F3EC;color:var(--ok);flex-shrink:0}
+.tobuy-tag{font-size:9px;padding:1px 6px;border-radius:4px;font-weight:600;background:#FFF4E0;color:var(--amb);flex-shrink:0}
+
+/* TODO */
+.todo-item{display:flex;align-items:flex-start;gap:9px;padding:9px 0;border-bottom:1px solid var(--bor);cursor:pointer}
+.todo-item:last-child{border-bottom:none}
+.todo-item.done .todo-text{text-decoration:line-through;opacity:.5}
+.date-chip{font-size:9px;padding:1px 6px;border-radius:4px;background:var(--surB);color:var(--txL);white-space:nowrap;flex-shrink:0;margin-top:2px;font-weight:500}
+.urgent-chip{font-size:9px;padding:1px 6px;border-radius:4px;background:#FFF0F0;color:var(--it);white-space:nowrap;flex-shrink:0;margin-top:2px;font-weight:600}
+
+/* FORMS */
+.inp{padding:8px 10px;border:1px solid var(--bor);border-radius:7px;font-size:12.5px;outline:none;background:var(--sur);color:var(--txt);width:100%}
+.inp:focus{border-color:var(--forM)}
+textarea.inp{resize:vertical;min-height:70px;line-height:1.6}
+.btn-p{background:var(--for);color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:500}
+.btn-s{background:var(--sur);color:var(--txM);border:1px solid var(--bor);border-radius:8px;padding:9px 18px;font-size:13px}
+.fl{font-size:11px;color:var(--txL);display:block;margin-bottom:4px}
+
+/* JOURNAL */
+.jbtn{width:100%;background:var(--sur);border:1px solid var(--bor);border-radius:12px;margin-bottom:8px;padding:12px 14px;text-align:left;display:flex;align-items:center;gap:10px;transition:border-color .2s}
+.jbtn.has{border-color:var(--forM)}
+.back-btn{background:none;border:none;color:var(--for);font-size:13px;margin-bottom:12px;padding:0}
+
+/* CAMPING */
+.din-ok{color:var(--ok);font-weight:600}
+.din-warn{color:var(--amb);font-weight:600}
+.din-no{color:var(--it);font-weight:600}
+
+/* MISC */
+.tl-row{display:flex;gap:11px;margin-bottom:8px;align-items:flex-start}
+.tl-d{min-width:76px;font-size:11.5px;color:var(--txL);padding-top:2px}
+.tl-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.physio-alert{background:#FFF9F0;border:1px solid var(--ambL);border-radius:10px;padding:13px}
+.empty{text-align:center;color:var(--txL);font-size:13px;padding:22px 0}
+.diff{font-size:11px;font-weight:500}
+.flight-card{background:var(--for);border-radius:10px;padding:13px;margin-bottom:8px;color:#fff}
+.flight-card .route{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500}
+.flight-card .detail{font-size:11.5px;color:rgba(255,255,255,.7);margin-top:3px;line-height:1.6}
+.budget-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--bor);font-size:12.5px}
+.budget-row:last-child{border-bottom:none}
+.b-amt{font-weight:500}
+.b-paid{font-size:11px;color:var(--ok)}
+.b-owing{font-size:11px;color:var(--amb)}
+</style>
+
+<div id="root"></div>
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────────────
+const DEPART = new Date("2026-09-10");
+
+const FLIGHTS = {
+  out: {route:"SYD → GVA",leg1:"Thu 10 Sep · Depart SYD 20:45 · QF8413/EK413 · Emirates",conn:"Dubai layover 3h 15min · Arrive DXB 05:15",leg2:"Fri 11 Sep · Depart DXB 08:30 · QF8089/EK89 · Emirates",arr:"Arrive Geneva T1: Fri 11 Sep 13:15",note:"Check in with Emirates for both legs"},
+  ret: {route:"GVA → SYD",leg1:"Fri 25 Sep · Depart GVA 15:15 · QF8090/EK90 · Emirates",conn:"Dubai stopover 2h 35min · Arrive DXB 23:40",leg2:"Sat 26 Sep · Depart DXB 02:15 · QF8414/EK414 · Emirates",arr:"Arrive Sydney T1: Sat 26 Sep 22:05",note:""}
+};
+
+const STAGES = [
+  {day:1,date:"13 Sep",from:"Les Houches",to:"Les Contamines",dist:"~18 km",gain:"+~1,050 m",loss:"−~1,050 m",time:"6–8 hrs",alt:"2,120 m",country:"FR",diff:3,
+   notes:"Take the Bellevue Cable Car from Les Houches. Today (13 Sep) is its final day of the 2026 season. Beautiful ridge walk through alpine hamlets via Col de Voza.",
+   start:"The trek starts in Les Houches, ~6 km down-valley from the Chamonix apartment (Aiguille Verte). Easiest way: Mont Blanc Express train from Chamonix-Mont-Blanc station to Les Houches (roughly hourly, short ride), FREE with the Carte d'Hôte guest card that Aiguille Verte gives you on arrival. Get off at Les Houches, or the Viaduc Sainte-Marie request halt which is closer to the lift. The Bellevue cable car base station is at 61 place de la Fruitière, a short walk (or the free village navette, Le Mulet) at the far end of town, right on the TMB. Alternatives: Chamonix Bus to Les Houches (discounted with the guest card, not free) or a taxi (~10–15 min, ~€25). Cable car runs daily 07:30–17:30 and 13 Sep is its LAST day of the season, so take an early train and aim to be at the base by ~07:20 for the first cabin (one ~20-person cabin, queues build fast). Pedestrian fare ~€18.90 one-way (you only need the ride up). Confirm the train timetable and that the lift is running (weather-dependent) the evening before.",
+   meals:{b:"Chamonix hotel/café",l:"Buy on trail or in Chamonix before departure",d:"⚠️ Gaï Soleil is ROOM ONLY, dinner not included. Add 25€pp via Maison Noël (32 m), or eat in village (La Table d'Hôtes Savoie 400 m, Le Carnotzet 420 m)"},
+   physio:"Good settling-in day. Flat valley sections let you gauge ankle and hip feel early. Warm up hip flexors before departure. Poles optional today.",
+   weather:"Bellevue cable car may be shut in high wind, take the marked forest route over Col de Voza on foot instead (sheltered, well-signed). If it is truly storming, skip the walk: Mont Blanc Express train Les Houches → Le Fayet, then SAT bus to Les Contamines.",
+   escape:"Easiest exit of the trek. From Les Houches or Col de Voza, drop back to Les Houches → Mont Blanc Express to Le Fayet → SAT bus (Les Contamines line, ~every 2 hrs). Or a direct taxi Les Houches / St-Gervais → Gaï Soleil (~€60–70).",
+   skip:"The 800 m climb out of Les Houches is already skipped by the Bellevue cable car (its final day of the season is 13 Sep, so it's running). Nothing else is dull enough to skip.",
+   plans:[{grade:"Standard",tag:"⭐ TMB classic",label:"Planned: Bellevue cable car → Col de Voza",dist:"≈16 km",gain:"+~650 m",loss:"−~630 m",time:"5–7 hrs",why:"The standard, gentle line: ride the Bellevue cable car up, cross Col de Voza (1,653 m) and descend through alpine hamlets to Les Contamines."},{grade:"Harder",tag:"📸 Most scenic",pref:true,label:"Col de Tricot variant",dist:"≈18 km (+~2 km)",gain:"+~1,050 m",loss:"−~1,050 m",time:"6–8 hrs",why:"Same start: take the Bellevue cable car up, then branch off the Bellevue plateau (before Col de Voza) down to the Bionnassay glacier torrent, cross it on a swaying suspension bridge, and climb over Col de Tricot (2,120 m) for wilder, quieter high scenery, dropping via Miage and Le Truc to Les Contamines. Longer and hillier, so start earlier."}],
+   warns:["Gaï Soleil = room only. Breakfast 13€pp / dinner 25€pp (Maison Noël) are optional add-ons"]},
+  {day:2,date:"14 Sep",from:"Les Contamines",to:"Les Chapieux",dist:"~20 km",gain:"+~1,500 m",loss:"−~1,100 m",time:"8–10 hrs",alt:"2,756 m",country:"FR",diff:5,
+   notes:"First major climb over Col du Bonhomme. No shuttle bus today, walk from hotel. Buy your trail lunch in Les Contamines before leaving.",
+   meals:{b:"Gaï Soleil, room only; breakfast 13€pp buffet optional",l:"Buy at Carrefour Montagne (310 m) or Proust (440 m) in Les Contamines before leaving",d:"Les Chambres du Soleil, half-board, fixed menu 19:00"},
+   physio:"Pace the ascent conservatively, left hip will be working hard on sustained climbs. Rest stops every 40–50 min. Don't push the first big day.",
+   weather:"Col du Bonhomme (2,329 m) is dangerously exposed in storm or whiteout and has no on-trail alternative. If the forecast is bad, wait a day in Les Contamines, or go around by road: taxi Les Contamines → Bourg-Saint-Maurice (~€70), then the seasonal Chapieux navette or a taxi up the Vallée des Glaciers to Les Chapieux.",
+   escape:"Remote day. Refuge de la Croix du Bonhomme, just past the col, is the shelter and help point. Before the col: return to Les Contamines, taxi → Bourg-Saint-Maurice, then navette/taxi to Les Chapieux. After the col: it is downhill to the Les Chapieux road-head where a Bourg-Saint-Maurice taxi (~€60) can collect. Les Chapieux is zone blanche, arrange any pickup before you lose signal.",
+   skip:"Dull bit: the flat first ~5 km (Les Contamines → Notre-Dame de la Gorge). The free navette from the Les Contamines tourist office skips it (summer shuttle, confirm it still runs mid-Sept).",
+   plans:[{grade:"Standard",tag:"⭐ TMB classic",label:"Planned: Col du Bonhomme + Croix du Bonhomme",dist:"≈18.5 km",gain:"+1,316 m",loss:"−929 m",time:"7–9 hrs",why:"The standard TMB: from Notre-Dame de la Gorge climb over Col du Bonhomme (2,329 m) and the Croix du Bonhomme (2,483 m), then descend to Les Chapieux."},{grade:"Harder",tag:"📸 Most scenic",pref:true,label:"Col des Fours + Tête Nord des Fours summit",dist:"≈20 km (+~1.5 km)",gain:"+~1,500 m",loss:"−~1,100 m",time:"8–10 hrs",why:"From the Croix du Bonhomme, climb the higher Col des Fours (2,665 m) with a short optional detour up to the Tête Nord des Fours summit for a 360° panorama of Mont Blanc and the Beaufortain. More exposed and snow-prone, and a longer day, so start earlier to reach Les Chapieux before the 19:00 dinner. Skip in bad weather."}],
+   warns:["📵 ZONE BLANCHE, no wifi or mobile signal at the property","🛏 Private double room, own bathroom (not a dorm). Bring a headlamp (zone blanche, limited lighting); earplugs only if you're a light sleeper","⏰ Fixed dinner 19:00, arrive by 19:00, depart by 09:00","💰 Balance on arrival: 24€ (2× Day 3 packed lunch) + tourist tax","🛒 Day 2 lunch is NOT provided, buy in Les Contamines before leaving"]},
+  {day:3,date:"15 Sep",from:"Les Chapieux",to:"Courmayeur",dist:"~21 km",gain:"+~1,300 m",loss:"−~1,650 m",time:"8–10 hrs",alt:"2,516 m",country:"IT",diff:4,
+   notes:"Into Italy via Col de la Seigne (2,516 m), the scenic high point. Two dull bits bookend the day: the flat first ~5 km (Les Chapieux → Ville des Glaciers, skip it with the shuttle) and, on the low finish, the Val Veny valley road. The real TMB stays HIGH after Lac Combal over the Mont Favre balcony (2,430 m) into Courmayeur for the best views of the trip. Pick your version in the route options below.",
+   meals:{b:"Les Chambres du Soleil",l:"Packed lunch from Les Chambres du Soleil (ordered, 24€ on arrival)",d:"⭐ BOOK BEFORE LEAVING SYDNEY: Brasserie du Vieux Courmayeur or La Terrazza (can 3rd person join?)"},
+   physio:"Right ankle brace recommended on the descent into Val Veny. Optional taxi Les Chapieux → Ville des Glaciers (~€15–20) is worth it if legs are already tired.",
+   weather:"Col de la Seigne (2,516 m) is a serious border col, turn back in electrical storms. Take the Ville des Glaciers shuttle (€4pp) to shorten exposure. If the col is out, do not cross: the only vehicle link to Courmayeur is the long way round via Bourg-Saint-Maurice. Once safely over into Italy, drop to Lac Combal for the Val Veny navette.",
+   escape:"Before the col: navette/taxi back to Bourg-Saint-Maurice (no direct road to Courmayeur, a big detour via the Mont Blanc tunnel or Little St-Bernard pass). After crossing into Val Veny: descend to La Visaille / Lac Combal and take the seasonal Val Veny navette → Courmayeur, which drops near Hôtel Crampon. Confirm the navette still runs mid-September.",
+   skip:"Two dull stretches: the flat first ~5 km (Ville des Glaciers shuttle ~€4pp) and, on the low finish, the Val Veny valley road (Val Veny navette from Lac Combal / La Visaille, runs to ~27 Sep 2026, or a taxi ~€25). See the route options below.",
+   plans:[{grade:"Standard",tag:"⭐ classic + 📸 scenic",pref:true,label:"⭐ TMB classic & most scenic: over Mont Favre",dist:"≈21 km (≈16 with shuttle start)",gain:"+~1,300 m",loss:"−~1,650 m",time:"8–10 hrs",why:"This IS the real TMB and the best views of the trip. After Col de la Seigne, from Lac Combal climb the Mont Favre balcony (2,430 m) facing Mont Blanc's south face, over Col Chécrouit (past Maison Vieille) and down to Courmayeur, with no valley road. Skip the dull flat first 5 km with the Ville des Glaciers shuttle. A big day, but with the Day 4 rest day right after, aim for this in good weather."},{grade:"Easier",tag:"Shortcut, less scenic",label:"Low valley finish (skip the Mont Favre climb)",dist:"≈17 km walked",gain:"+~800 m",loss:"−~1,150 m",time:"6–7 hrs",why:"For tired legs or dodgy weather. Cross Col de la Seigne, descend to Lac Combal, then follow the Val Veny valley-floor road into Courmayeur. Avoids the second big climb, but that valley road is the dull stretch of the day."},{grade:"Easier",tag:"Shortcut",label:"Easiest finish: navette or taxi from Lac Combal",dist:"≈14 km walked (−~7 km)",gain:"+~730 m",loss:"−~500 m",time:"5–6 hrs on foot",why:"Skips BOTH the Mont Favre climb and the dull valley road. Walk Col de la Seigne down to Lac Combal / La Visaille, then take the Val Veny navette (seasonal, to ~27 Sep 2026) or a taxi (~€25) into Courmayeur."},{grade:"Easier",tag:"Shortcut",label:"Shortest: shuttle both ends, just the col",dist:"≈9 km walked",gain:"+~700 m",loss:"−~700 m",time:"3.5–4.5 hrs on foot",why:"Least walking while still crossing the col: Ville des Glaciers shuttle at the start (skips the dull flat 5 km) and the Val Veny navette from Lac Combal at the end. You walk only the Col de la Seigne crossing, the single best part."}],
+   warns:["⚠️ Book Courmayeur dinner BEFORE leaving Sydney!"]},
+  {day:4,date:"16 Sep",from:"Courmayeur",to:"Courmayeur",dist:"0 km, REST DAY",gain:"–",loss:"–",time:"–",alt:"1,224 m",country:"IT",diff:0,rest:true,
+   notes:"Full rest day, let the muscles recover. See the rest-day ideas below.",
+   restday:[
+     {t:"🚡 Skyway Monte Bianco",d:"The big one: a rotating cable car from Pontal d'Entrèves up to Pointe Helbronner (3,466 m) for a 360° glacier and Mont Blanc panorama, the Sky Vertigo glass walkway, and a panoramic bistro at the top. Go EARLY on a clear morning (cloud builds by midday); departures every 20 min from 08:30 to 16:00, allow 1.5–4 hrs. In summer the Saussurea botanical garden sits at the Pavillon mid-station. Book ahead, and only really worth it on a clear day."},
+     {t:"🧖 QC Terme Pré-Saint-Didier (spa)",d:"Renowned thermal spa ~5 km away (short taxi or bus). Outdoor 37°C pools with Mont Blanc views, saunas, steam rooms, Kneipp paths and 40+ wellness experiences, perfect for tired legs. Book ahead; bring a swimsuit (you already have flip flops)."},
+     {t:"🍝 Courmayeur town",d:"Wander Via Roma, the pedestrian street, for shops, gelato, a long lunch and an aperitivo. The Forum Sport Center has a public pool if you fancy an easy swim."},
+     {t:"💆 Recovery first",d:"Above all, rest the legs, elevate, and sort any blisters or gear before the harder second half. Good day to visit a pharmacy or the Courmayeur medical centre if you're carrying an injury."}
+   ],
+   meals:{b:"Hôtel Crampon",l:"Free choice, Courmayeur centre",d:"Book a nice restaurant"},
+   physio:"Active recovery only. Compression device. Today is the day to sort any blister or gear issues. Check boot lacing on the balcony walk tomorrow.",
+   weather:"No trekking today. If the weather is poor the Skyway Monte Bianco may close (glacier views need clear skies), swap it for a spa/rest day in Courmayeur, gear sorting and physio. Check skywaymontebianco.com the evening before.",
+   escape:"You are already at Hôtel Crampon for a second night, nothing to reach. Use the day to see a pharmacy or the Courmayeur medical centre (Rue Circonvallazione) if you are carrying an injury into the second half.",
+   plans:[],
+   warns:[]},
+  {day:5,date:"17 Sep",from:"Courmayeur",to:"Rifugio Bonatti",dist:"~14 km",gain:"+~1,360 m",loss:"−~600 m",time:"6–8 hrs",alt:"2,584 m",country:"IT",diff:4,
+   notes:"The most beautiful balcony walk in the world. Uninterrupted views of the Grandes Jorasses. Dinner at Bonatti is unmissable, one of the best meals on the route.",
+   meals:{b:"Hôtel Crampon (breakfast only)",l:"Buy supplies in Courmayeur before leaving",d:"Rifugio Bonatti (half-board) ✅, dinner 19:00 sharp"},
+   physio:"Shorter, more forgiving day after Day 3 and rest. Still check in by 18:45, strict policy.",
+   weather:"The balcony is exposed but has an easy low option, take the Val Ferret valley-floor path instead of the high Grandes Jorasses balcony. Or ride Arriva bus 924 up Val Ferret to the Bivio Rifugio Bonatti stop, then 1 hr up to the refuge.",
+   escape:"No road reaches Bonatti, it is a footpath refuge. Bus 924 (Val Ferret line) from Courmayeur to the Bivio Rifugio Bonatti stop gets you to the valley floor, but the final ~1 hr climb is on foot. If you cannot manage it, phone the refuge to advise; for a real injury call 112 for mountain rescue. Confirm bus 924 is still running mid-September.",
+   skip:"No dull stretch to skip, it's a short scenic balcony day. Arriva bus 924 up Val Ferret exists only as a bad-weather bail-out (confirm it still runs mid-Sept).",
+   plans:[{grade:"Standard",tag:"⭐ TMB classic",label:"Planned: high balcony via Rifugio Bertone",dist:"≈12.3 km",gain:"+860 m",loss:"−101 m",time:"4–6 hrs",why:"The standard TMB balcony: climb to Rifugio Bertone and traverse the Mont de la Saxe flank with uninterrupted Grandes Jorasses views to Rifugio Bonatti."},{grade:"Harder",tag:"📸 Most scenic",pref:true,label:"Mont de la Saxe ridge (Testa della Tronche)",dist:"≈14 km (+~2 km)",gain:"+~1,360 m",loss:"−~600 m",time:"6–8 hrs",why:"One of the finest Mont Blanc panoramas on the whole TMB, a high ridge above the Bertone balcony. Extra climb and exposure, so start earlier and still check in at Bonatti by 18:45."},{grade:"Easier",tag:"Shortcut",label:"Low Val Ferret valley path",dist:"≈12 km (similar length)",gain:"+~450 m",loss:"−~100 m",time:"3–4 hrs",why:"Skip the high balcony and follow the flat valley floor if legs are tired, with just the short final climb up to the refuge. Less scenic but much gentler and quicker."}],
+   warns:["⚠️ Check-in 15:00–18:45 STRICTLY, arrive after 19:00 = no-show charge","💰 CASH ONLY, €93.50pp + €1.50 tourist tax","🛏 Sleeping liner included. Slippers mandatory (€3). Towels €3 each.","🥪 Order Day 6 packed lunch HERE the night before, cash, not yet arranged"]},
+  {day:6,date:"18 Sep",from:"Rifugio Bonatti",to:"La Fouly",dist:"20.2 km",gain:"+895 m",loss:"−1,410 m",time:"6–8 hrs",alt:"2,537 m",country:"CH",diff:5,
+   notes:"Grand Col Ferret (2,537 m), the highest point of the entire TMB and the Switzerland border crossing. Long descent into La Fouly. Farewell Italy.",
+   meals:{b:"Rifugio Bonatti",l:"⚠️ Order packed lunch AT Bonatti the night before, CASH only. Not yet arranged",d:"Auberge Maya-Joie, raclette valaisanne fixed menu, 18:45. Confirm dinner on arrival (~20€pp). Flag dietary needs"},
+   physio:"⚠️ Biggest descent day. Right ankle brace essential. Poles mandatory from the start. Both knees and hip will be working hard on −1,410 m. Regular rest breaks on the descent.",
+   weather:"Highest and most exposed day, with no low-level alternative over Grand Col Ferret, the go/no-go call must be made at Bonatti over breakfast. If it is out: descend the Italian Val Ferret → bus 924 to Courmayeur → bus to Aosta → Orsières → TMR bus 272 to La Fouly. Allow a full day.",
+   escape:"Before the col (Italian side): descend to Arnouvaz, bus 924 → Courmayeur, then the long transfer to La Fouly via Aosta and Orsières (bus 272). After the col (Swiss side): descend to Ferret hamlet or straight to La Fouly and pick up TMR bus 272, which stops right in La Fouly by Maya-Joie.",
+   skip:"No shortcut over the Grand Col Ferret, and the long descent to La Fouly is scenic. TMR bus 272 only helps from Ferret downward if you're really struggling.",
+   plans:[{grade:"Standard",tag:"⭐ classic + 📸 scenic",pref:true,label:"The one route: over Grand Col Ferret",dist:"≈20.2 km",gain:"+895 m",loss:"−1,410 m",time:"6–8 hrs",why:"The only line, and it IS the scenic highlight: over the Grand Col Ferret (2,537 m, the trek's high point) into Switzerland, then the long descent to La Fouly. No alternative over the col."}],
+   warns:["🏔 HIGHEST POINT of the route, 2,537 m","⚠️ No alternative route, weather decision must be made early at Bonatti","🧀 Raclette valaisanne fixed menu, flag dietary needs · dinner 18:45, arrive by 18:00","💰 Balance ~71 CHF on arrival: dinner (~20€) + 2× picnic (24€) + tax (7.20 CHF), cash/euro/card"]},
+  {day:7,date:"19 Sep",from:"La Fouly",to:"Champex-Lac",dist:"15.4 km",gain:"+420 m",loss:"−565 m",time:"4–5 hrs",alt:"1,466 m",country:"CH",diff:2,
+   notes:"Delightful rolling recovery day through pristine Swiss villages, Praz-de-Fort, Orsières. Short but stiff climb to the beautiful alpine lake.",
+   meals:{b:"Auberge Maya-Joie",l:"Packed lunch from Maya-Joie (ordered, in the ~71 CHF balance)",d:"Chalet La Grange, half-board (Edelweiss room). Flag dietary needs in advance or 10€ surcharge"},
+   physio:"Easier recovery day, the timing is perfect. Good for active muscle recovery. Champex-Lac has a pool, check with the hotel.",
+   weather:"Easy low day. In rain, skip the climb to Champex: TMR bus 272 La Fouly → Orsières, change to bus 271 Orsières → Champex-Lac. Pay in CHF or euro; timetables at tmrsa.ch.",
+   escape:"Same chain, bus 272 to Orsières, bus 271 up to Champex-Lac (stops by the lake, short walk to Chalet La Grange). A taxi from Orsières is also an option (~CHF 40–50).",
+   skip:"Gentle valley recovery day. To shorten it, TMR bus 272 La Fouly → Orsières then 271 → Champex-Lac skips the valley (regular Swiss service, tmrsa.ch).",
+   plans:[{grade:"Standard",tag:"⭐ TMB classic",pref:true,label:"The one route: valley to Champex-Lac",dist:"≈15.4 km",gain:"+420 m",loss:"−565 m",time:"4–5 hrs",why:"A gentle valley-and-forest recovery day through Praz-de-Fort and Issert, then a short climb to the alpine lake at Champex. The standard line, no real variant."}],
+   warns:["🛒 LAST proper shop before Chamonix, buy Day 9 lunch supplies here. Both you and companion resupply!","💰 Balance 136 CHF CASH ONLY on arrival: 99 CHF room + 30€ picnic + 7.20 CHF tax","⏰ Room held to 18:00 · early departure 08:15"]},
+  {day:8,date:"20 Sep",from:"Champex-Lac",to:"Trient",dist:"16.5 km",gain:"+742 m",loss:"−682 m",time:"5–6 hrs",alt:"1,987 m",country:"CH",diff:3,
+   notes:"Bovine Route (via La Giète and pastures), the right call for late September. Rocky trail through pine forests and alpine meadows, some scrambling over tree roots. Magnificent Rhône Valley views.",
+   meals:{b:"Chalet La Grange",l:"Packed lunch from Chalet La Grange (ordered, 30€ on arrival)",d:"Auberge du Mont Blanc, HALF BOARD CONFIRMED ✅ (dinner included). Flag dietary needs (fondue)"},
+   physio:"Rocky terrain requires focused foot placement. Left hip activation before the rocky sections. Private twin tonight (sauna on site).",
+   weather:"Bovine is already the bad-weather choice over the Fenêtre d'Arpette. If Bovine itself is out: bus 271 Champex → Orsières, train Orsières → Martigny, then Postbus 213 Martigny → Col de la Forclaz → Trient.",
+   escape:"Bus 271 Champex → Orsières → train to Martigny → Postbus 213 to Trient. Or, once on-trail at Col de la Forclaz, take Postbus 213 Forclaz → Trient directly (short hop). No ATM or shop in Trient, carry cash.",
+   skip:"Dull bit: the final forest descent from Col de la Forclaz to Trient. Postbus 213 (Col de la Forclaz → Trient, short hop) skips it, a reliable Swiss postbus; confirm the autumn timetable.",
+   plans:[{grade:"Standard",tag:"⭐ TMB classic (foul-weather line)",pref:true,label:"Planned: Bovine route",dist:"≈16.5 km",gain:"+742 m",loss:"−682 m",time:"5–6 hrs",why:"The standard fair-and-foul-weather TMB via the Bovine alpage (famous rösti). Chosen here for late September and the ankle."},{grade:"Harder",tag:"📸 Most scenic",label:"Fenêtre d'Arpette (2,665 m)",dist:"≈16 km (similar length)",gain:"+~1,150 m",loss:"−~1,100 m",time:"7–9 hrs",why:"The spectacular high alternative to the planned Bovine route, facing the Trient glacier. Steep, rocky and long, so start early. Avoided here for late September and the right ankle, but the classic choice in settled weather."}],
+   warns:["🍽 Half board CONFIRMED, dinner + breakfast included, prepaid via Booking.com","🥪 Day 9 lunch NOT included, buy in Champex (Day 7) or order at auberge on arrival (~CHF 12–15 / 14€). No shop or ATM in Trient","🛁 Private twin (2 single beds), shared bathroom, sauna on site · check-in 14:00–19:30"]},
+  {day:9,date:"21 Sep",from:"Trient",to:"Tré-le-Champ",dist:"~14 km",gain:"+~1,150 m",loss:"−~1,000 m",time:"6–7 hrs",alt:"2,201 m",country:"FR",diff:4,
+   notes:"Back into France via Col de Balme (2,191 m). Steep climb out of Trient, Mont Blanc reappears dramatically at the col. Wind can be fierce, layer up before cresting the ridge.",
+   meals:{b:"Auberge du Mont Blanc",l:"⚠️ NOT included, buy in Champex (Day 7) or order at Auberge du Mont Blanc on arrival (~CHF 12–15 / 14€). No shop in Trient",d:"Auberge la Boërne, half-board ✅ (included)"},
+   physio:"Penultimate day, keep something in the tank. Wind exposure at the col: layer up before the crest. Good day to consciously stay under threshold.",
+   weather:"The Col de Balme ridge is wind-blasted in bad weather. Bail low by rail: Trient → Le Châtelard-Frontière, Mont Blanc Express (SNCF) train → Montroc-Le Planet, then 10 min walk to Auberge la Boërne. Avoids the col entirely.",
+   escape:"Cleanest rail escape of the trek. Trient → Châtelard-Frontière → Mont Blanc Express train → Montroc-Le Planet → 10 min walk to Auberge la Boërne. Or from Col de Balme descend to Le Tour, chairlift down, then Chambus bus/train to Tré-le-Champ.",
+   skip:"To cut the descent from Col de Balme you could ride the Charamillon/Autannes chairlifts down to Le Tour, BUT those lifts are season-tied and likely CLOSED by mid-Sept, confirm. Otherwise walk down, or from Le Tour take the valley bus or the train (Montroc) to Tré-le-Champ.",
+   plans:[{grade:"Standard",tag:"⭐ modern TMB + 📸 scenic",pref:true,label:"Aiguillette des Posettes ridge",dist:"≈14 km (+~0.5 km)",gain:"+~1,150 m",loss:"−~1,000 m",time:"6–7 hrs",why:"The modern waymarked TMB and the scenic line: from Col de Balme follow the panoramic Posettes ridge with Mont Blanc massif views the whole way down. More up-and-down, so allow a little longer."},{grade:"Easier",tag:"Older/easier variant",label:"Descend via Le Tour",dist:"≈12 km (−~1.5 km)",gain:"+~900 m",loss:"−~750 m",time:"4–5 hrs",why:"Gentler, less exposed descent from Col de Balme down to the valley at Le Tour, then along the trail to Tré-le-Champ. Shorter and quicker."}],
+   warns:["💰 Balance on arrival: 24€ (2× Day 10 packed lunch) + tourist tax","⏰ Arrive by 18:00 · depart 09:00 · confirm 06:15 breakfast the night before"]},
+  {day:10,date:"22 Sep",from:"Tré-le-Champ",to:"Chamonix",dist:"18.2 km",gain:"+1,000 m",loss:"−1,400 m",time:"8–10 hrs",alt:"2,525 m",country:"FR",diff:5,
+   notes:"Most dramatic day, saved for last. Grand Balcon Sud via Lac Blanc: one of the finest ridge walks in the Alps. Hardest due to fatigue + long full-foot descent (Brévent and Planpraz CLOSED).",
+   meals:{b:"Auberge la Boërne ✅, CONFIRM 06:15 service night before",l:"Packed lunch from Auberge la Boërne (ordered, 24€ on arrival)",d:"🎉 CELEBRATION DINNER, book ahead in Chamonix!"},
+   physio:"POLES MANDATORY, full 1,400 m descent with tired legs. Lac Blanc can be icy in the mornings, poles essential from the very start, not just for descent.",
+   weather:"Plan D (no ladders, Col des Montets bypass → La Flégère → Les Praz → Chamonix) is the foul-weather route. If it is truly bad, walk 10 min to Montroc-Le Planet and take the Mont Blanc Express train straight to Chamonix.",
+   escape:"Valley transport the whole way, the easiest escape of the trek. Walk to Montroc-Le Planet (10 min) → Mont Blanc Express train → Chamonix, or the free Chambus valley bus from Argentière / Les Praz → Chamonix. Reach the Appart'Hotel with no climbing.",
+   skip:"Brévent & Planpraz cable cars are CLOSED for your dates, so the 1,400 m descent is all on foot, no lift shortcut. To cut the very end, drop to Les Praz and take the free Chambus bus or the Mont Blanc Express train into Chamonix.",
+   plans:[{grade:"Standard",tag:"⭐ classic + 📸 scenic",pref:true,label:"Planned: Grand Balcon Sud via Lac Blanc + Brévent",dist:"≈18.2 km",gain:"+1,000 m",loss:"−1,400 m",time:"8–10 hrs",why:"The flagship finish and one of the finest ridge walks in the Alps: ladders → Tête aux Vents → Lac Blanc → Grand Balcon Sud → Le Brévent → Chamonix. The classic and the most scenic, saved for last, and the only option that actually takes you past Lac Blanc, which you wanted to see."},{grade:"Easier",tag:"Easier variant",label:"Via La Flégère (skip Lac Blanc)",dist:"≈8 km (−~10 km)",gain:"+~450 m",loss:"−~800 m",time:"4–5 hrs",why:"Join the Grand Balcon Sud lower at La Flégère, missing the steep Lac Blanc climb but keeping the ridge views, then descend to Les Praz and on to Chamonix. Much shorter with far less ascent, but you will NOT see Lac Blanc on this line."},{grade:"Easier",tag:"Easier variant",label:"No-ladders start via Col des Montets",dist:"≈9 km (−~9 km)",gain:"+~1,000 m",loss:"−~1,400 m",time:"4–5 hrs",why:"Skip the exposed vertical ladders above Tré-le-Champ by taking the Col des Montets path up to Tête aux Vents, then continue via La Flégère to Chamonix. Same finish, gentler start. From Tête aux Vents you can still detour up to Lac Blanc (adds ~1–1.5 hrs); otherwise you miss it."}],
+   warns:["🚨 START BY 06:45","⚠️ Brévent & Planpraz CLOSED, full 1,400 m descent on foot, no cable car","⚠️ Confirm 06:15 breakfast with Auberge la Boërne the night before","❄️ Lac Blanc can be icy, poles from the start"]},
+];
+
+const STAYS = [
+  {id:"s0",night:"11–12 Sep",place:"Appart'Hotel Aiguille Verte",loc:"Chamonix",type:"Hotel",status:"confirmed",cost:"AUD 888.14",paid:"–",payBy:"10 Aug",note:"Cancel deadline: 11 Aug"},
+  {id:"s1",night:"13 Sep · Day 1",place:"Chalet Hôtel Gaï Soleil",loc:"Les Contamines",type:"Hotel",status:"confirmed",cost:"AUD 257.14",paid:"–",payBy:"12 Aug",note:"288 chemin des loyers, 74170 Les Contamines-Montjoie. ROOM ONLY, no breakfast/dinner. Breakfast 13€pp buffet optional; dinner 25€pp via Maison Noël (32 m / 1 min), add with hotel if wanted. Cancel deadline: 13 Aug"},
+  {id:"s2",night:"14 Sep · Day 2",place:"Les Chambres du Soleil",loc:"Les Chapieux",type:"Hotel",status:"confirmed",cost:"€194.24 + 24€",paid:"€194.24",payBy:"PAID",note:"Double, private bathroom, half-board (fixed dinner 19:00 + breakfast). 📵 ZONE BLANCHE, no wifi/signal. Private double room (not a dorm), so no liner needed, bring a headlamp for the limited lighting; earplugs if a light sleeper. Arrive by 19:00, depart by 09:00. Balance on arrival: 24€ (2× Day 3 packed lunch) + tourist tax"},
+  {id:"s3",night:"15–16 Sep · Days 3–4",place:"Hôtel Crampon",loc:"Courmayeur (2 nights)",type:"Hotel",status:"confirmed",cost:"AUD 655.68",paid:"–",payBy:"30 Aug",note:"Double/twin, balcony, breakfast only. Cancel deadline: 31 Aug"},
+  {id:"s4",night:"17 Sep · Day 5",place:"Rifugio Bonatti",loc:"Val Ferret, Italy",type:"Refuge",status:"confirmed",cost:"€190 (2 pax)",paid:"💰 Cash on arrival",payBy:"CASH",note:"€93.50pp + €1.50 tourist tax. Private twin, half-board. Sleeping liner + slippers incl. Towels €3 each. ⚠️ Order Day 6 packed lunch here the night before, CASH, not yet arranged."},
+  {id:"s5",night:"18 Sep · Day 6",place:"Auberge Maya-Joie",loc:"La Fouly, Switzerland",type:"Auberge",status:"confirmed",cost:"190 CHF + ~71 CHF",paid:"190 CHF",payBy:"PAID",note:"Twin, shared bathroom. Dinner NOT bundled in room, confirm on arrival (raclette valaisanne fixed menu, ~20€pp, 18:45; arrive by 18:00). 2× picnic = Day 7 lunch. Balance ~71 CHF on arrival (dinner + 24€ picnic + 7.20 CHF tax), cash/euro/card. Flag dietary needs."},
+  {id:"s6",night:"19 Sep · Day 7",place:"Chalet La Grange",loc:"Champex-Lac, Switzerland",type:"Hotel",status:"confirmed",cost:"198 CHF + picnic",paid:"99 CHF",payBy:"~136 CHF cash",note:"Edelweiss Room, half-board. 2× picnic = Day 8 lunch. Balance 136 CHF CASH ONLY on arrival (CHF or euro): 99 CHF room + 30€ picnic + 7.20 CHF tax. Notify dietary needs in advance or 10€ surcharge. Room held to 18:00, depart 08:15. LAST shop before Chamonix, buy Day 9 lunch."},
+  {id:"s7",night:"20 Sep · Day 8",place:"Auberge du Mont Blanc",loc:"Trient, Switzerland",type:"Auberge",status:"confirmed",cost:"AUD 310.72 (paid; CHF not shown on confirmation)",paid:"Paid via Booking.com",payBy:"PAID",note:"Planpro 1, 1929 Trient. Booking.com, Twin Room, 2 adults, paid in full, no balance on arrival. Tel +41 77 420 08 14, sauna on site. Check-in 14:00-19:30, out by 10:00. ⚠️ CONFIRM on new booking: half board (old room had dinner + breakfast; Day 8 dinner is fondue), bathroom type, cancellation terms, towels. ⚠️ Day 9 lunch NOT included, buy in Champex (Day 7) or order on arrival (~CHF 12-15). No shop/ATM in Trient."},
+  {id:"s8",night:"21 Sep · Day 9",place:"Auberge la Boërne",loc:"Tré-le-Champ, France",type:"Auberge",status:"confirmed",cost:"€225 + 24€",paid:"€225",payBy:"PAID",note:"Private dorm (3p), half-board. Balance on arrival: 24€ (2× Day 10 packed lunch) + tourist tax. Arrive by 18:00, depart 09:00. ⚠️ Confirm 06:15 breakfast the night before."},
+  {id:"s9",night:"22 Sep",place:"Appart'Hotel Aiguille Verte",loc:"Chamonix",type:"Hotel",status:"confirmed",cost:"€253.40",paid:"€253.40",payBy:"PAID",note:"Post-trek night. Book celebration dinner!"},
+  {id:"s10",night:"23–24 Sep",place:"Eastwest Hôtel by Malone",loc:"Geneva",type:"Hotel",status:"confirmed",cost:"AUD 895",paid:"–",payBy:"20 Sep",note:"Pre-flight. 2 nights. Cancel deadline: 21 Sep. Flight departs GVA 15:15 on 25 Sep."},
+];
+
+// Structured facility detail per stay (sourced online July 2026; items marked "confirm" not verified). Keyed by stay id.
+const STAYINFO={
+  s0:{room:"Self-catering apartment (kitchenette: fridge, microwave, stovetop)",board:"No meals. Order-ahead breakfast delivery available (extra)",balance:"€500 card damage deposit on arrival (refunded ~7 days after checkout)",liner:"Not needed (linen provided)",towels:"Included",wifi:"Free wifi throughout",shower:"Private ensuite (bring own toiletries)",checkin:"From 16:00 · self check-in via lockbox · MUST notify arrival time ahead",lunch:"",pay:"Card. Early-booking discount up to 15%",contact:"683 Rue Joseph Vallot, Chamonix · +33 4 50 93 10 48 · aiguilleverte-chamonix.com",extra:"~5–10 min walk to centre · free parking · sauna+jacuzzi (book ahead). 👥 Vanessa may arrive 11th or 12th, which changes how these 2 nights are split (see Expenses). ⚠️ Left-luggage during the trek NOT confirmed, ask property or use Chamlockers/Bounce (~€3–4.50/day)."},
+  s1:{room:"Private double/twin, ensuite (3-star, 1823 farmhouse)",board:"Room only. Breakfast buffet 07:30–10:00 (extra). Dinner set menu from 18:00 (~€30) at on-site Le Comptoir, or eat in village",balance:"Confirm on arrival: any breakfast/dinner add-ons taken",liner:"Not needed (hotel linen)",towels:"Included (confirm)",wifi:"Free wifi · village has normal mobile signal",shower:"Private ensuite",checkin:"From 15:00 · check-out by 11:00 · latest arrival: confirm",lunch:"Buy Day 2 lunch in Les Contamines (Carrefour Montagne / Proust) before leaving",pay:"Cards accepted",contact:"288 chemin des Loyers, Les Contamines · +33 4 50 47 02 94 · gaisoleil.com",extra:"Nordic bath + sauna on site · free village shuttle · parking"},
+  s2:{room:"Private double, ensuite bathroom",board:"Half-board: table d'hôtes dinner 19:00 (homemade) + breakfast",balance:"24€ (2× Day 3 packed lunch) + tourist tax, on arrival",liner:"Not needed for private room (linen + Arpin wool blankets provided)",towels:"Included (bath linen provided)",wifi:"NONE · zone blanche, no wifi and no mobile signal",shower:"Private ensuite",checkin:"Check-out by 10:00 · check-in hours not published, arrive before 19:00 dinner",lunch:"Packed lunch to order ~€12. Day 2 lunch: buy in Les Contamines beforehand",pay:"Card, cash, euro cheque or ANCV accepted",contact:"Les Chapieux, 73700 Bourg-Saint-Maurice · +33 4 79 31 30 22 · leschambresdusoleil-montblanc.com",extra:"Digital-detox by design. No pets. Laundry service. Popular TMB stop, confirm dinner headcount"},
+  s3:{room:"Double/twin with private balcony, ensuite",board:"Breakfast only (buffet incl). No restaurant on site, dine in Courmayeur centre",balance:"None (prepay online by 30 Aug)",liner:"Not needed",towels:"Included + free toiletries",wifi:"Free wifi throughout · town coverage",shower:"Private ensuite",checkin:"Check-in 15:00–23:30 · check-out 07:00–11:00",lunch:"Free choice in Courmayeur. Buy Day 5 supplies before leaving",pay:"Cards accepted · large free car park · EV charging",contact:"Strada La Villette 8, Courmayeur · +39 0165 84 23 85 · crampon.it",extra:"Rest day here (Day 4). Skyway Monte Bianco station nearby. Pets not allowed"},
+  s4:{room:"Private twin, half-board",board:"Half-board: fixed multi-course dinner ~18:45 (assigned seating) + breakfast ~06:15",balance:"CASH ONLY ~€190 + €3 tax on arrival. Extras cash too (liner/towel €3 each, coin showers)",liner:"REQUIRED · bring your own or rent €3 (blankets + pillows provided, no sheet)",towels:"Not included · rent €3 or bring your own · bring coins for showers",wifi:"No wifi · no or very limited mobile signal",shower:"Shared · coin-operated hot water (~3 min max)",checkin:"Reception from ~15:30 (not earlier) · arrive well before 18:45 dinner · depart after breakfast",lunch:"Order Day 6 packed lunch here (~€14, CASH) the night before",pay:"CASH ONLY, no cards accepted",contact:"Loc. Malatrà, Val Ferret · +39 335 68 48 578 · rifugiobonatti.it",extra:"One of the best refuges on the TMB (Grandes Jorasses views). Strict, structured, assigned seating"},
+  s5:{room:"Twin, shared bathroom",board:"Half-board: raclette valaisanne fixed dinner ~18:45 (unlimited raclette, ~CHF 25) + breakfast",balance:"~71 CHF on arrival (dinner + 24€ picnic + 7.20 CHF tax) · card/cash/euro",liner:"Bring your own (host expects it) · sheets available for a fee",towels:"Not included · extra fee or bring your own",wifi:"Free wifi · mobile signal: confirm",shower:"Shared showers and toilets",checkin:"From 15:00 · CALL the lodge if arriving after 18:00 · checkout: confirm",lunch:"2× picnic = Day 7 lunch (ordered, in the balance). Picnic room 11:00–15:00",pay:"Cards accepted (CHF). Flag dietary needs",contact:"Route du Barfay 4, 1944 La Fouly · +41 27 565 56 30 · mayajoie.ch",extra:"Camping des Glaciers nearby for companions"},
+  s6:{room:"Double room (booked as 'Edelweiss', confirm exact room), half-board",board:"Half-board: dinner 18:45 + breakfast 06:30–07:30 (CHF 99pp)",balance:"~136 CHF CASH on arrival (99 room + 30€ picnic + 7.20 CHF tax). Cards +3% surcharge",liner:"Not confirmed · bring one to be safe",towels:"Bath towel included (double room)",wifi:"Wifi available · mobile signal: confirm",shower:"Hot showers, shared (two rooms share a bathroom)",checkin:"From 16:00 · room held to 18:00 · depart 08:15 · latest arrival: confirm",lunch:"2× picnic (CHF 15 each) = Day 8 lunch. LAST proper shop, buy Day 9 lunch here too",pay:"Cash CHF/EUR (no surcharge) or card +3%. Tourist tax extra. Notify diet ahead or 10€ surcharge",contact:"Route du Vallon, 1938 Champex d'en Haut · +41 79 916 49 33 · lagrangechampex.ch",extra:"Village has bakery + restaurants; lake pool"},
+  s7:{room:"Private twin (Booking.com), shared bathroom",board:"Half-board INCLUDED (dinner + breakfast), confirmed. Dinner often fondue/curry, special diets on request. Day 9 packed lunch is extra, pay for it",balance:"Prepaid via Booking.com, no balance on arrival",liner:"Not stated · bring one to be safe",towels:"Bring your own (shared bathrooms)",wifi:"Free wifi (all areas) · mobile: confirm",shower:"Shared (no ensuite) · sauna on site",checkin:"From 14:00 · check-out by 10:00 · latest arrival: confirm",lunch:"⚠️ Day 9 lunch NOT included · order pique-nique on arrival (~CHF 11–14) or buy in Champex. No shop/ATM in Trient",pay:"Card + cash accepted (prepaid this booking)",contact:"Planpro 1, 1929 Trient · +41 77 420 08 14 · aubergemontblanc.com",extra:"Sells out early. Cramped sleeping quarters per reviews"},
+  s8:{room:"Private 3-bed dorm room (Green/Balme), not ensuite",board:"Half-board: communal Savoyard multi-course dinner (~1.5 hrs) + breakfast. Reputed best food on the TMB",balance:"24€ (2× Day 10 packed lunch) + tourist tax on arrival",liner:"Bed linen provided · liner not stated, bring to be safe",towels:"Not confirmed · bring your own (dorm-style)",wifi:"Wifi available but flaky · mobile: confirm",shower:"Shared (3 showers / 2 toilets) · peak-time queues",checkin:"Arrive by 18:00 · depart 09:00 · CONFIRM 06:15 breakfast the night before",lunch:"2× packed lunch = Day 10 lunch (ordered, in the balance)",pay:"Confirm payment method with property",contact:"288 chemin de Trélechamps, Argentière · +33 4 50 54 05 14 · la-boerne.fr",extra:"Small, books out early. ~2 min off the TMB route"},
+  s9:{room:"Self-catering apartment (kitchenette)",board:"No meals. Book a celebration dinner out in Chamonix",balance:"€500 card damage deposit on arrival (refunded after)",liner:"Not needed",towels:"Included",wifi:"Free wifi",shower:"Private ensuite",checkin:"From 16:00 · self check-in via lockbox",lunch:"",pay:"Card (paid €253.40)",contact:"683 Rue Joseph Vallot, Chamonix · aiguilleverte-chamonix.com",extra:"Post-trek night"},
+  s10:{room:"Double room (4-star boutique, soundproofed, blackout curtains)",board:"No meals. Buffet breakfast ~CHF 29pp, 07:00–10:00",balance:"Pay by 20 Sep · cancel by 21 Sep",liner:"Not needed",towels:"Included",wifi:"Free high-speed wifi",shower:"Private ensuite",checkin:"Check-in 15:00–23:59 · check-out by 12:00 · staffed reception",lunch:"",pay:"Card. Cancellation typically 48 h before, confirm rate terms",contact:"6 Rue des Pâquis, Geneva · +41 22 708 17 17 · eastwesthotel.ch",extra:"7 min walk to Cornavin station (direct train to GVA airport). Pâquis area can be noisy at night, request a quiet/higher room. 👥 Vanessa shares the 23rd night (leaves the 24th). ⚠️ Addy may fly to Paris earlier for work and depart from there instead (unconfirmed), which would change the 24th night and the return flight"},
+};
+
+// Payment status per stay: have we paid, what is still due (incl food/extras), total on arrival. Keyed by stay id.
+const PAYINFO={
+  s0:"Not yet paid. Pay AUD 888.14 online by 10 Aug. €500 card deposit on arrival (refunded).",
+  s1:"Not yet paid. Pay AUD 257.14 online by 12 Aug (room only). On arrival: any breakfast/dinner add-ons if taken.",
+  s2:"Room + half-board prepaid (€194.24). On arrival: €24 (2× Day 3 lunch) + tourist tax.",
+  s3:"Not yet paid. Pay AUD 655.68 online by 30 Aug (2 nights, B&B). Nothing due on arrival.",
+  s4:"Nothing prepaid, CASH ONLY (no card machine). Pay it all together on arrival: ~€190 room + €3 tax + Day 6 packed lunch ~€14 (order it tonight) + slippers €3 + towel €3 only if you rent (you have your own). Bring €1/€2 EURO coins for the showers. Carry ~€215 in euros.",
+  s5:"Room prepaid (190 CHF). On arrival, together: raclette dinner + 24€ Day 7 picnic (order tonight) + 7.20 CHF tax = ~71 CHF total. Towel is an extra fee only if you rent (you have your own). Card or cash.",
+  s6:"Part-paid (99 CHF). On arrival, cash: 99 CHF room balance + 30€ Day 8 picnic (order tonight) + 7.20 CHF tax = ~136 CHF total. Card +3%. Bath towel included.",
+  s7:"Fully prepaid via Booking.com, incl. half-board (dinner + breakfast). On arrival: only the Day 9 packed lunch ~CHF 11–14 (extra) if you order it.",
+  s8:"Room + half-board prepaid (€225). On arrival: €24 (2× Day 10 lunch) + tourist tax.",
+  s9:"Fully prepaid (€253.40). €500 card deposit on arrival (refunded).",
+  s10:"Not yet paid. Pay AUD 895 online by 20 Sep. Buffet breakfast ~CHF 29pp if taken."
+};
+
+// Email + where each stay was booked. Keyed by stay id.
+const BOOK={
+  s0:{email:"aiguilleverte@wanadoo.fr",src:"Separate booking (confirm: direct or Booking.com)"},
+  s1:{email:"confirm with property",src:"Separate booking (confirm: direct or Booking.com)"},
+  s2:{email:"lesoleildeschapieux@gmail.com",src:"TMB package, order 4289941 (montourdumontblanc)"},
+  s3:{email:"info@crampon.it",src:"Separate booking (confirm: direct or Booking.com)"},
+  s4:{email:"rifugiobonatti@gmail.com",src:"Booked direct with the refuge (cash on arrival)"},
+  s5:{email:"contact@mayajoie.ch",src:"TMB package, order 4289941 (montourdumontblanc)"},
+  s6:{email:"info@lagrangechampex.ch",src:"TMB package, order 4289941 (montourdumontblanc)"},
+  s7:{email:"info@aubergemontblanc.com",src:"Booking.com"},
+  s8:{email:"contact@la-boerne.fr",src:"TMB package, order 4289941 (montourdumontblanc)"},
+  s9:{email:"aiguilleverte@wanadoo.fr",src:"Separate booking (confirm: direct or Booking.com)"},
+  s10:{email:"welcome@eastwesthotel.ch",src:"Separate booking (confirm: direct or Booking.com)"}
+};
+
+const GEAR = {
+  "Base Layers · Hiking":[
+    {item:"Merino long-sleeve tops × 2 (200 + 125)",rec:"Icebreaker Merino 200 Oasis LS + Kathmandu K-Merino 125",owned:true,why:"Next-to-skin layer that wicks sweat and stays warm even when damp. The 200 for cold cols, the 125 for milder days."},
+    {item:"Merino base-layer leggings (125)",rec:"Kathmandu K-Merino 125",owned:true,why:"Warmth under trousers on cold cols and around the refuge at night."},
+    {item:"Hiking t-shirt × 2",rec:"Have 1 merino tee. Add a 2nd (merino or synthetic) for hot back-to-back days",owned:false,why:"Cooler option for warm valley sections; two lets one dry while you wear the other."},
+    {item:"Merino trekking socks × 3 pairs (mid-weight)",rec:"Researching: Darn Tough Hiker Micro Crew / Boot Full Cushion / Injinji",owned:false,why:"Cushioning and blister prevention; merino resists odour over consecutive days. Rotate 3 so feet start dry."},
+    {item:"Merino underwear × 6–8",rec:"Love the Icebreaker Siren. Have 3, buy several more",owned:false,why:"One per day plus spares, quick-dry for hand-washing at refuges. You wanted way more, so aim high."},
+    {item:"Sports bras × 3 (Icebreaker Siren)",rec:"Love the Icebreaker Siren. Have 1, buy at least 2 more",owned:false,why:"Merino support that washes and dries overnight. Sticking to the brand you like."},
+  ],
+  "Camp & Sleep":[
+    {item:"Lightweight down jacket",rec:"Rab Microlight Alpine Down Hoody (W)",owned:true,why:"Packable warmth for cold col tops and chilly refuge evenings."},
+    {item:"Merino 250 long-sleeve (camp)",rec:"Kathmandu K-Merino 250",owned:true,why:"Warm dry top to change into at the refuge after hiking."},
+    {item:"Camp leggings",rec:"lululemon",owned:true,why:"Comfortable dry layer for evenings and sleeping."},
+    {item:"Merino singlet × 1",rec:"Don't have one yet. Considering a top with an integrated bra (NOT the Kathmandu, disliked it)",owned:false,why:"Light layering / sleep top; an integrated-bra version could save carrying a separate bra."},
+    {item:"PJ top: Merino 200 long-sleeve",rec:"Icebreaker Merino 200 Oasis LS",owned:true,why:"Dedicated dry sleepwear keeps your hiking layers for hiking."},
+    {item:"PJ bottoms: Merino 200 leggings",rec:"Icebreaker Merino 200 Oasis",owned:true,why:"Warm sleep layer for cold refuge nights."},
+  ],
+  "Mid & Outer Layers":[
+    {item:"Softshell or fleece mid-layer",rec:"Patagonia R1 (Air / fleece), size S",owned:false,why:"The insulating middle of the layer system; breathable while climbing, warm on the move."},
+    {item:"Waterproof hardshell jacket",rec:"Patagonia Torrentshell 3L (W) M, or similar",owned:false,why:"Essential rain and wind protection on exposed cols; late-September weather turns fast."},
+    {item:"Waterproof hardshell trousers",rec:"Researching: OR Aspire 3L / Torrentshell 3L / Rab / Decathlon MH500",owned:false,why:"Keeps legs dry and warm in sustained rain or snow above ~2,200 m."},
+    {item:"Trekking trousers × 2 (3rd optional)",rec:"Have 3 (Rab Torque + 2× Decathlon). 2 is plenty for 10 days, one on + one spare/drying; leave the 3rd to save weight",owned:true,why:"Durable quick-dry legs; two lets one dry after rain or washing. No need for extra."},
+  ],
+  "Footwear":[
+    {item:"Waterproof hiking boots (broken-in, ankle support)",rec:"La Sportiva Ultra Raptor II Mid Wide GTX",owned:true,why:"Ankle support and grip for long rocky descents; must be broken in to avoid blisters."},
+    {item:"Camp sandals / flip flops",rec:"Flip flops owned",owned:true,why:"Air out feet at the refuge, and needed for shared showers."},
+    {item:"Gaiters (low profile)",rec:"Brands still to research",owned:false,why:"Keep scree, mud and wet morning grass out of your boots."},
+  ],
+  "Accessories":[
+    {item:"Wide-brim sun hat",rec:"",owned:false,why:"High-altitude sun is intense; shades face and neck on exposed balconies."},
+    {item:"Warm beanie",rec:"",owned:false,why:"Big heat loss from the head on cold cols and at night."},
+    {item:"Lightweight gloves + warmer liner",rec:"Rab / BD ScreenTap / Decathlon",owned:false,why:"Cold hands on early starts and windy cols; liner for dexterity, warmer pair for the tops."},
+    {item:"Buff / neck gaiter",rec:"You have a lightweight UV neck gaiter",owned:true,why:"Versatile neck warmth, sun cover and wind/dust protection; the UV version shields your neck on the exposed sunny balconies."},
+    {item:"Sunglasses (UV400, Cat 3, glacier-ready)",rec:"Ugly Fish / The Iconic / other",owned:false,why:"Glare off snow and altitude UV; Cat 3 for bright glacier light."},
+    {item:"Trekking poles",rec:"From Olivia, collect before departure",owned:true,why:"Save the knees and the wobbly ankle on big descents; vital on Days 6 and 10."},
+    {item:"Belt",rec:"Arcade Atlas Slim A2",owned:false,why:"Keeps trousers up as you lose a little over 10 days; stretchy and low-bulk."},
+    {item:"Fanny bag / hip pouch",rec:"",owned:false,why:"Quick access to phone, snacks and lip balm without stopping to open the pack."},
+  ],
+  "Essentials":[
+    {item:"Silk sleeping liner",rec:"REQUIRED at Rifugio Bonatti (Day 5, or rent €3), expected at Maya-Joie (Day 6). Not needed Day 2",owned:false,why:"Hygiene layer in refuge/auberge beds; some places require you bring your own."},
+    {item:"Headlamp",rec:"You have one. Needed for the zone blanche (Day 2), 06:15 breakfasts, dark dorms, and the pre-dawn Day 10 start (06:45)",owned:true,why:"No reliable lighting at some stops; essential for pre-dawn starts like Day 10. Weighs almost nothing, keep it."},
+    {item:"Microfibre towel (quick-dry)",rec:"Sea to Summit Airlite L",owned:true,why:"Packs small and dries fast; several refuges charge for or don't provide towels."},
+    {item:"Dry bags × 2 (5 L + 8 L)",rec:"Sea to Summit Ultra-SIL",owned:true,why:"Keep sleep kit and electronics dry inside the pack in all-day rain."},
+    {item:"Packing cubes",rec:"Basic Kmart ones at home",owned:true,why:"Keep the pack organised so you find things fast in a dim dorm."},
+    {item:"AirPods (white noise for sleep)",rec:"Using these instead of earplugs",owned:true,why:"Block snoring in shared rooms with white noise; double as your earplugs."},
+    {item:"Electrolyte flask 300–500 ml (lightweight)",rec:"Small soft or collapsible bottle",owned:false,why:"Mix electrolytes separately from your main water on hot or long days without flavouring the whole supply."},
+    {item:"Portable battery (10,000+ mAh)",rec:"Nitecore NB10000 Gen4",owned:false,why:"Refuges have limited or paid charging; keeps phone, watch and headlamp alive."},
+    {item:"Emergency bivvy",rec:"SOL",owned:false,why:"Lightweight insurance if stuck out in bad weather or waiting for help."},
+    {item:"Fire starter",rec:"Gerber",owned:false,why:"Backup warmth and signalling in an emergency; tiny and weightless."},
+    {item:"Phone + chargers (WHOOP, Apple Watch)",rec:"",owned:false,why:"Navigation, weather, photos and health tracking; bring all the cables."},
+    {item:"EU + Swiss plug adapter",rec:"",owned:false,why:"France and Italy use the Europlug, Switzerland a different socket. Cover both."},
+  ],
+  "Health & Cosmetics":[
+    {item:"Sunscreen SPF 50+ (small tube)",rec:"",owned:false,why:"Altitude sun burns fast, even through cloud."},
+    {item:"Soap (multi-use)",rec:"Dr Bronner's",owned:false,why:"One bottle for body, hair and washing clothes."},
+    {item:"Small shampoo + conditioner",rec:"",owned:false,why:"Travel-size for the few showers you'll get."},
+    {item:"Blister kit",rec:"AMK Blister Medic (+ Compeed / Leukotape)",owned:false,why:"Blisters are the most likely thing to end a day; treat them early."},
+    {item:"First aid kit + antiseptic wipes",rec:"AMK Hiker or Ultralight/Watertight .7",owned:false,why:"Basic wound care miles from a pharmacy."},
+    {item:"Ibuprofen + paracetamol",rec:"",owned:false,why:"Manage aches and swelling on back-to-back long days."},
+    {item:"Electrolyte tabs / sachets",rec:"",owned:false,why:"Replace salts lost sweating on hot climbs; prevents cramps and headaches. Pairs with the flask above."},
+    {item:"Supplement kit, 12 pre-portioned daily bags",rec:"Portion at home before departure",owned:false,why:"One grab-bag per day saves faff and bottle weight."},
+  ],
+  "Maybe / Extra":[
+    {item:"Hiking shorts",rec:"",owned:false,why:"Optional for hot valley days if you'd rather not zip off trousers."},
+    {item:"Top with integrated bra (research)",rec:"NOT the Kathmandu one. Could replace a separate bra",owned:false,why:"Might cut one item if comfy enough for both support and layering."},
+  ],
+  "Navigation & Documents":[
+    {item:"Offline maps + GPX (Organic Maps or Gaia GPS)",rec:"AllTrails / Maps.me as backup",owned:false},
+    {item:"Weather app installed, MeteoBlue or MeteoSuisse",rec:"Critical for: Col de la Seigne, Grand Col Ferret, Lac Blanc",owned:false},
+    {item:"European roaming SIM (FR + IT + CH)",rec:"⚠️ Zone blanche at Les Chambres du Soleil (Day 2), no signal regardless",owned:false},
+    {item:"Passport + colour copy",rec:"",owned:false},
+    {item:"Travel insurance card (high-altitude + heli evac, FR/IT/CH)",rec:"",owned:false},
+    {item:"Refuge confirmations printed or saved offline",rec:"",owned:false},
+    {item:"Cash: EUR + CHF",rec:"Bonatti (cash only); La Grange 136 CHF cash only; Day 2 + Day 9 balances 24€",owned:false},
+    {item:"Emergency calories (nuts, chocolate, energy bars)",rec:"Pack enough for every day, refuges may have reduced hours late Sept",owned:false},
+    {item:"Pack weight check: ≤8–9 kg including water",rec:"",owned:false},
+  ],
+};
+
+const TODOS = {
+  "🗓 Urgent / Dated":[
+    {id:"t0",task:"10 Aug, Cancel additional booking.com reservations if no extra people joining",date:"10 Aug",urgent:true},
+    {id:"t1",task:"Book Courmayeur dinner (Days 3–4), Brasserie du Vieux Courmayeur or La Terrazza. Can 3rd person join?",date:"Pre-departure",urgent:true},
+    {id:"t5",task:"Day 6 lunch, order packed lunch AT Rifugio Bonatti the night before (CASH only). Not yet arranged",date:"On trail",urgent:true},
+    {id:"t6",task:"Day 9 lunch (Trient), buy in Champex on Day 7, or order at Auberge du Mont Blanc on arrival. No shop in Trient",date:"On trail",urgent:true},
+  ],
+  "💳 Payments Due":[
+    {id:"p0",task:"Pay Appart'Hotel Aiguille Verte, AUD 888.14",date:"10 Aug"},
+    {id:"p1",task:"Pay Chalet Hôtel Gaï Soleil, AUD 257.14",date:"12 Aug"},
+    {id:"p2",task:"Pay Hôtel Crampon, AUD 655.68",date:"30 Aug"},
+    {id:"p3",task:"Pay Eastwest Hôtel by Malone (Geneva), AUD 895",date:"20 Sep"},
+    {id:"p4",task:"Cash on arrival, Rifugio Bonatti (Day 5): ~€190 + €3 tax, CASH ONLY",date:"Carry"},
+    {id:"p5",task:"Cash on arrival, Chalet La Grange (Day 7): ~136 CHF, CASH ONLY (99 CHF room + 30€ picnic + 7.20 CHF tax)",date:"Carry"},
+    {id:"p6",task:"Cash on arrival, Maya-Joie (Day 6): ~71 CHF (dinner + 24€ picnic + 7.20 CHF tax), cash/euro/card",date:"Carry"},
+    {id:"p7",task:"Cash on arrival, Les Chambres du Soleil (Day 2): 24€ + tax",date:"Carry"},
+    {id:"p8",task:"Cash on arrival, Auberge la Boërne (Day 9): 24€ + tax",date:"Carry"},
+  ],
+  "📦 Pre-Departure Prep":[
+    {id:"d0",task:"Purchase travel insurance, high-altitude trekking + helicopter evacuation · France, Italy & Switzerland"},
+    {id:"d1",task:"Get European roaming SIM (France, Italy & Switzerland, all 3 countries)"},
+    {id:"d2",task:"Download offline maps + GPX: Organic Maps or Gaia GPS; AllTrails / Maps.me as backup"},
+    {id:"d3",task:"Install MeteoBlue or MeteoSuisse for daily weather checks on the trail"},
+    {id:"d4",task:"Collect trekking poles from Olivia"},
+    {id:"d5",task:"Sort all gear: pack weight target ≤8–9 kg with water"},
+    {id:"d6",task:"Pre-portion supplements into 12 labelled daily zip-lock bags before departure"},
+    {id:"d7",task:"Stock emergency calories for every day, nuts, chocolate, energy bars"},
+    {id:"d8",task:"Pack a pair or two of earplugs for the thin-walled auberges + the Day 9 Boërne group bunk room (most nights are private rooms)"},
+    {id:"d10",task:"Silk liner is optional, rooms are private twins/doubles (not dorms); bring one only for hygiene on the auberge nights. Rifugio Bonatti provides its own liner + slippers"},
+    {id:"d11",task:"Flag dietary needs in advance at ALL half-board stops, esp. cheese menus: Maya-Joie raclette, La Grange (10€ surcharge if not notified), Trient fondue"},
+    {id:"d9",task:"Watch TMB media: youtube.com/watch?v=PEVx_xeW7Y0"},
+  ],
+  "🏕 Camping Companion":[
+    {id:"c0",task:"Ask Maya-Joie (Day 6, La Fouly), can 3rd person join dinner as paying guest?"},
+    {id:"c1",task:"Ask Chalet La Grange (Day 7, Champex-Lac), can 3rd person join dinner?"},
+    {id:"c2",task:"Ask Auberge du Mont Blanc (Day 8, Trient), can non-guest book dinner?"},
+    {id:"c3",task:"Confirm Courmayeur restaurant booking (Days 3–4) can seat 3 people"},
+    {id:"c4",task:"HOBO Camping, confirm Sept 2026 closing date: info@campinghobo.com / +39 0165 869073"},
+    {id:"c5",task:"Both book Chamonix accommodation for 22 Sep, no camping in Chamonix. Friend options: Gîte le Vagabond or Auberge de Jeunesse"},
+    {id:"c6",task:"Remind companion: stock up on food in Champex (Day 7), nothing available in Trient"},
+    {id:"c7",task:"Remind companion: carry cash EUR + CHF (several sites cash only)"},
+    {id:"c8",task:"Remind companion: arrive Le Peuty (Day 8 camp) before 7pm, small shop closes then"},
+  ],
+};
+
+const CAMPING = [
+  {day:1,date:"13 Sep",loc:"Les Contamines",yourStay:"Chalet Hôtel Gaï Soleil (room only)",camp:"Camping Le Pontet",addr:"2485 Route de Notre Dame de la Gorge",web:"campinglepontet.fr",open:"✅ Open to 4 Oct 2026",cost:"~€10–15/person",fac:"Showers · Café · Charging · Laundry",dist:"~1.5 km / 20 min walk (far end of town toward Notre-Dame de la Gorge)",din:"✅ Easy",dinNote:"Walk to village, dine together at Maison Noël (Gaï Soleil's partner restaurant, 32 m) or any village restaurant, Gaï Soleil itself is room-only.",note:"Le Pontet also has a gîte/restaurant on site if friend prefers to eat independently."},
+  {day:2,date:"14 Sep",loc:"Les Chapieux",yourStay:"Les Chambres du Soleil",camp:"Free camping at Tourist Office",addr:"Centre of Les Chapieux village",web:"",open:"✅ Open",cost:"FREE (€5 donation cash)",fac:"Toilets only",dist:"~200 m / 2 min walk (village is tiny)",din:"✅ Easy",dinNote:"Friend eats at Auberge de la Nova just down the road. Your half-board dinner is a fixed menu at 19:00 (zone blanche, no signal to coordinate, so agree a plan in advance).",note:"Les Chapieux is tiny, you'll likely all end up at the same bar afterwards."},
+  {day:3,date:"15 Sep",loc:"Courmayeur",yourStay:"Hôtel Crampon (centre)",camp:"HOBO Camping / Camping Aiguille Noire",addr:"Val Veny, ~5 km from Courmayeur",web:"campinghobo.com",open:"⚠️ CONFIRM Sept 2026 closing: info@campinghobo.com",cost:"–",fac:"Free shuttle bus to Courmayeur centre",dist:"~5 km by road / free shuttle bus",din:"✅ Easy",dinNote:"Friend takes shuttle into town, joins you for dinner. Check Brasserie du Vieux Courmayeur or La Terrazza can seat 3.",note:""},
+  {day:4,date:"16 Sep",loc:"Courmayeur, Rest Day",yourStay:"Hôtel Crampon (2nd night)",camp:"Same campsite as Day 3, no move",addr:"Val Veny",web:"",open:"Same as Day 3",cost:"",fac:"",dist:"~5 km, same as Day 3",din:"✅ Easy, Best day",dinNote:"Full rest day together. Skyway Monte Bianco together, long lunch, afternoon in town. Maximum flexibility.",note:"Best opportunity for a proper full day all together as a group."},
+  {day:5,date:"17 Sep",loc:"Rifugio Bonatti",yourStay:"Rifugio Bonatti, private twin, half-board",camp:"❌ No camping near Bonatti",addr:"",web:"",open:"",cost:"",fac:"",dist:"~12 km from Courmayeur via trail",din:"❌ Not possible",dinNote:"Your Bonatti dinner is at 19:00 sharp, half-board, strict. This is the one night where you genuinely part ways for dinner.",note:"Options for companion: stay 3rd night at Val Veny camp and hike the Balcony Walk as a day hike (return by bus). OR book a gîte dorm in Italian Val Ferret, Chalet Val Ferret has ~20 places, book early."},
+  {day:6,date:"18 Sep",loc:"La Fouly",yourStay:"Auberge Maya-Joie (twin, shared bath)",camp:"Camping des Glaciers",addr:"Route de Ferret 17, 1944 La Fouly",web:"camping-glaciers.ch",open:"✅ Open to 5 Oct 2026",cost:"~CHF 15–20/person",fac:"3 bathroom blocks · Hot showers free",dist:"~300–400 m / 5 min walk",din:"⚠️ Ask",dinNote:"Ask Maya-Joie if friend can join the raclette dinner as a paying guest. If not: Auberge des Glaciers and Hôtel Edelweiss both nearby.",note:"Upper section of campsite restricted, lower + TMB pitches still available."},
+  {day:7,date:"19 Sep",loc:"Champex-Lac",yourStay:"Chalet La Grange (Edelweiss Room)",camp:"Camping Les Rocailles",addr:"Route du Lac 134, 1938 Champex-Lac",web:"champex-camping.ch",open:"✅ Open Jun 1 – Oct 31",cost:"~CHF 30–35/person",fac:"Hot showers · Laundry · Heated facilities",dist:"~600 m / 8 min walk (opposite sides of lake road)",din:"⚠️ Ask",dinNote:"Ask Chalet La Grange if friend can join as paying dinner guest. Village also has bakery (CHF 12 breakfast buffet!) and restaurants.",note:"🛒 LAST proper shop before Chamonix, both resupply here, including Day 9 lunch."},
+  {day:8,date:"20 Sep",loc:"Trient",yourStay:"Auberge du Mont Blanc (Twin Room)",camp:"Camping Le Peuty (community ground)",addr:"Le Peuty, Trient valley",web:"refugelepeuty.ch",open:"✅ Open Jun–Oct",cost:"~CHF 6/person (cash to warden)",fac:"Basic gas shower cabins · Shop open 4–7pm only",dist:"~1 km / 12–15 min walk",din:"✅ Possible",dinNote:"Le Peuty serves dinner in their Mongolian yurt, good food, great atmosphere. Or friend walks to Auberge du Mont Blanc (confirm non-guests can eat there).",note:"⚠️ No grocery or ATM in Trient. Companion must stock up in Champex. Arrive Le Peuty before 7pm, shop closes."},
+  {day:9,date:"21 Sep",loc:"Tré-le-Champ",yourStay:"Auberge la Boërne (private dorm, half-board)",camp:"Camping du Glacier d'Argentière",addr:"161 Chemin des Chosalets, Argentière",web:"campingchamonix.com",open:"⚠️ Open May 13 – Sep 30 only, cuts it very fine!",cost:"Tent €5–7 + €8.50/person",fac:"Good showers · Full facilities",dist:"~3 km / 35–40 min walk or short train from Argentière",din:"⚠️ Tricky",dinNote:"3 km valley gap makes evening meetups hard. Best: companion hikes down to Argentière, eats in village (good restaurants), then camps. Alternative: companion stays at Auberge la Boërne directly (limited spaces, half-board required, check with auberge).",note:"Largest gap of the trip. Argentière is in the valley below; Tré-le-Champ is on the hillside."},
+  {day:10,date:"22 Sep",loc:"Chamonix",yourStay:"Chamonix town hotel (TO BOOK)",camp:"❌ No camping in Chamonix, must book hostel or gîte dorm",addr:"",web:"",open:"",cost:"",fac:"",dist:"~0–500 m, all in town centre",din:"✅ YES, Celebrate!",dinNote:"Final night. Book a celebration dinner together. You've all earned it. Book well ahead, Chamonix fills up.",note:"Companion options: Gîte le Vagabond or Auberge de Jeunesse are the best budget options."},
+];
+
+const TABS=[{id:"overview",i:"⛰",l:"Overview"},{id:"stages",i:"🗺",l:"Stages"},{id:"totals",i:"📊",l:"Totals"},{id:"stays",i:"🏨",l:"Stays"},{id:"gear",i:"🎒",l:"Gear"},{id:"todos",i:"✅",l:"To-Do"},{id:"camping",i:"🏕",l:"Camping"},{id:"split",i:"🧾",l:"Expenses"}];
+const DC=["","Easy","Moderate","Moderate","Hard","Very Hard"];
+const DK=["","#3D7A5A","#A86B18","#A86B18","#9B2525","#6B0000"];
+const CC={FR:"var(--fr)",IT:"var(--it)",CH:"var(--ch)"};
+const CN={FR:"France",IT:"Italy",CH:"Switzerland"};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let S={tab:"overview",openStage:null,activeJournal:null,jDraft:{},gear:{},todos:{},journal:{},acNotes:{}};
+
+function load(){}
+function save(k,v){}
+
+function days(){return Math.max(0,Math.ceil((DEPART-new Date())/86400000));}
+function pct(){const s=new Date("2026-01-01"),e=DEPART,n=new Date();return Math.min(100,Math.max(0,Math.round(((n-s)/(e-s))*100)));}
+function gDone(){return Object.values(S.gear).filter(Boolean).length;}
+function gTotal(){return Object.values(GEAR).flat().length;}
+function tDone(){return Object.values(S.todos).filter(Boolean).length;}
+function tTotal(){return Object.values(TODOS).flat().length;}
+function jFilled(){return Object.values(S.journal).filter(v=>v&&v.length>5).length;}
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+function render(){document.getElementById("root").innerHTML=app();bind();}
+
+function app(){
+  const d=days();
+  return`<div class="hdr">
+  <div class="mtn"></div>
+  <div class="hdr-top">
+    <div>
+      <div class="hdr-tag">Tour du Mont Blanc · September 2026</div>
+      <div class="hdr-title">Summit Dossier</div>
+      <div class="hdr-sub">SYD 10 Sep, GVA, Chamonix → Courmayeur → Champex → Chamonix, Return 26 Sep</div>
+    </div>
+    <div class="hdr-cnt">
+      <div class="hdr-num">${d}</div>
+      <div class="hdr-lbl">days to depart</div>
+    </div>
+  </div>
+  <div class="pbar"><div class="pfill" style="width:${pct()}%"></div></div>
+  <nav>${TABS.map(t=>`<button class="nb${S.tab===t.id?" on":""}" data-tab="${t.id}">${t.i} ${t.l}</button>`).join("")}</nav>
+</div>
+<main>${{overview:rOverview,stages:rStages,totals:rTotals,stays:rStays,gear:rGear,todos:rTodos,camping:rCamping,split:rSplit}[S.tab]()}</main>`;}
+
+// ── OVERVIEW ──────────────────────────────────────────────────────────────────
+function rOverview(){
+  const pd=gDone(),pt=gTotal(),td=tDone(),tt=tTotal();
+  return`<div class="g3" style="margin-bottom:12px">
+  ${[{v:"~157 km",l:"Total Distance"},{v:"+9,420 m",l:"Total Ascent"},{v:"3 countries",l:"FR · IT · CH"},{v:"10 days",l:"Trail Days"},{v:"11 nights",l:"Accommodation booked"},{v:"10 Sep",l:"SYD Departure"}].map(x=>`<div class="sc"><div class="sv">${x.v}</div><div class="sl">${x.l}</div></div>`).join("")}
+</div>
+<div class="g2" style="margin-bottom:12px">
+  ${[{l:"Gear packed",d:pd,t:pt,c:"var(--for)"},{l:"To-Dos done",d:td,t:tt,c:"var(--amb)"}].map(w=>`<div class="sc"><div style="font-size:11px;color:var(--txL);margin-bottom:5px">${w.l}</div><div class="mbar"><div class="mfil" style="width:${Math.min(100,(w.d/w.t)*100)}%;background:${w.c}"></div></div><div style="font-size:12px;font-weight:500;color:${w.c}">${w.d}/${w.t}</div></div>`).join("")}
+</div>
+<div class="flight-card">
+  <div class="route">✈️ SYD → GVA, Outbound</div>
+  <div class="detail">${FLIGHTS.out.leg1}<br>${FLIGHTS.out.conn}<br>${FLIGHTS.out.leg2}<br><strong style="color:rgba(255,255,255,.9)">${FLIGHTS.out.arr}</strong><br><span style="color:rgba(255,255,255,.5)">${FLIGHTS.out.note}</span></div>
+</div>
+<div class="flight-card" style="background:var(--forM)">
+  <div class="route">✈️ GVA → SYD, Return</div>
+  <div class="detail">${FLIGHTS.ret.leg1}<br>${FLIGHTS.ret.conn}<br>${FLIGHTS.ret.leg2}<br><strong style="color:rgba(255,255,255,.9)">${FLIGHTS.ret.arr}</strong></div>
+</div>
+<div class="card cp" style="margin-bottom:10px">
+  <div class="serif" style="font-size:16px;font-weight:600;color:var(--for);margin-bottom:11px">Trip Timeline</div>
+  ${[{d:"10 Sep",e:"Depart Sydney SYD 20:45",c:"#7A7268"},{d:"11 Sep",e:"Arrive Geneva 13:15 → Chamonix (Appart'Hotel Aiguille Verte)",c:"#7A7268"},{d:"12 Sep",e:"Chamonix settle-in: last-minute snacks, sort gear",c:"var(--amb)"},{d:"13–22 Sep",e:"Tour du Mont Blanc, 10 trail days",c:"var(--for)"},{d:"22–23 Sep",e:"Chamonix post-trek (Appart'Hotel Aiguille Verte)",c:"var(--amb)"},{d:"23–24 Sep",e:"Transfer to Geneva → Eastwest Hôtel by Malone",c:"#7A7268"},{d:"25 Sep",e:"Depart Geneva GVA 15:15",c:"#7A7268"},{d:"26 Sep",e:"Arrive Sydney SYD 22:05 🎉",c:"var(--for)"}].map(t=>`<div class="tl-row"><div class="tl-d">${t.d}</div><div class="tl-dot" style="background:${t.c}"></div><div style="font-size:13px">${t.e}</div></div>`).join("")}
+</div>
+<div class="physio-alert">
+  <div style="font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--amb);margin-bottom:7px">⚕ Physio Reminders, Every Day</div>
+  <div style="font-size:12.5px;line-height:1.8;color:var(--txM)">
+    <div>• <strong>Left hip</strong>, hip flexor & glute weakness on descents. Activate each morning: clamshells, SL glute bridges, banded walks.</div>
+    <div>• <strong>Right ankle</strong>, sprain history. Brace on ALL technical descents (Days 3, 5, 6, 10 especially). Poles always.</div>
+    <div>• <strong>Daily</strong>, rest stops every 45 min, compression device each evening, electrolytes on hot / long days.</div>
+    <div>• <strong>Late Sept snow</strong>, possible above ~2,200 m. Check MeteoBlue daily before major cols.</div>
+  </div>
+</div>
+<div class="physio-alert" style="margin-top:10px">
+  <div style="font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--amb);margin-bottom:7px">🧍 Vanessa (companion), body notes</div>
+  <div style="font-size:12.5px;line-height:1.8;color:var(--txM)">
+    <div>• <strong>Left elbow</strong>, fracture last year. Care on the Day 10 ladders and any scrambling; ease into pole loading.</div>
+    <div>• <strong>Right ankle</strong>, can be a bit wobbly. Brace and poles on technical descents (Days 6 and 10 especially); watch footing on rocky ground.</div>
+  </div>
+</div>`;
+}
+
+// ── STAGES ────────────────────────────────────────────────────────────────────
+// Approximate elevation profiles [distance km, altitude m]: schematic from key waypoints; accurate track on AllTrails
+const ELEV={
+  1:[[0,1007],[2,1800],[3.5,1720],[5.5,2120],[7,1900],[9,1650],[11,1550],[13,1400],[15,1300],[16.5,1220],[18,1164]],
+  2:[[0,1164],[2,1210],[4,1500],[6,1750],[8,2000],[10,2329],[11,2483],[12,2665],[13,2756],[14,2500],[16,2100],[18,1700],[20,1554]],
+  3:[[0,1554],[2,1650],[4,1850],[6,2100],[8,2350],[10.5,2516],[12,2250],[13.5,2000],[15,1970],[16.5,2200],[18,2430],[19,2200],[20,1700],[21,1224]],
+  5:[[0,1224],[2,1600],[4,1989],[6,2300],[8,2584],[9.5,2400],[11,2200],[12.5,2100],[14,2056]],
+  6:[[0,2056],[2,2150],[4,2250],[6,2400],[8,2500],[10,2537],[11.5,2350],[13,2150],[14.5,1950],[16,1800],[17.5,1700],[19,1650],[20.2,1600]],
+  7:[[0,1600],[1.5,1500],[3,1350],[4.5,1250],[6,1151],[7.5,1180],[9,1250],[10.5,1350],[12,1420],[13.5,1480],[15.4,1466]],
+  8:[[0,1466],[1.5,1550],[3,1700],[4.5,1850],[6,1987],[7.5,1900],[9,1780],[10.5,1650],[12,1526],[13.5,1450],[15,1350],[16.5,1279]],
+  9:[[0,1279],[1.5,1450],[3,1650],[4.5,1850],[6,2050],[7,2191],[8.5,2050],[10,1850],[11,1650],[12,1500],[13.5,1417]],
+  10:[[0,1417],[1.5,1700],[3,2000],[4,2130],[5,2280],[6,2352],[7,2200],[8,1980],[9,1877],[10.5,2050],[12,2300],[13,2525],[14.5,2100],[16,1650],[17,1300],[18.2,1035]]
+};
+const STAY_BY_DAY={1:"s1",2:"s2",3:"s3",4:"s3",5:"s4",6:"s5",7:"s6",8:"s7",9:"s8",10:"s9"};
+function stayForDay(d){return STAYS.find(x=>x.id===STAY_BY_DAY[d]);}
+function elevSVG(day){
+  const pts=ELEV[day]; if(!pts) return "";
+  const W=300,H=96,PL=8,PR=8,PT=18,PB=16;
+  const xmax=Math.max(...pts.map(p=>p[0])),ys=pts.map(p=>p[1]);
+  const ymin=Math.min(...ys),ymax=Math.max(...ys),yr=(ymax-ymin)||1;
+  const X=v=>PL+(v/xmax)*(W-PL-PR),Y=v=>PT+(1-(v-ymin)/yr)*(H-PT-PB);
+  const line=pts.map((p,i)=>(i?"L":"M")+X(p[0]).toFixed(1)+" "+Y(p[1]).toFixed(1)).join(" ");
+  const area=line+" L"+X(xmax).toFixed(1)+" "+(H-PB)+" L"+X(0).toFixed(1)+" "+(H-PB)+" Z";
+  const pi=ys.indexOf(ymax),px=X(pts[pi][0]),py=Y(ymax);
+  const anc=pi===0?"start":pi===pts.length-1?"end":"middle";
+  return`<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block" role="img" aria-label="Approximate elevation profile, peak ${ymax} m over ${xmax} km">
+    <defs><linearGradient id="eg${day}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--for)" stop-opacity="0.28"/><stop offset="1" stop-color="var(--for)" stop-opacity="0.02"/></linearGradient></defs>
+    <path d="${area}" fill="url(#eg${day})"/>
+    <path d="${line}" fill="none" stroke="var(--for)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="3" fill="var(--for)"/>
+    <text x="${px.toFixed(1)}" y="${(py-5).toFixed(1)}" text-anchor="${anc}" font-size="8.5" fill="var(--txM)" font-weight="600">${ymax.toLocaleString()} m</text>
+    <text x="${X(0).toFixed(1)}" y="${H-4}" text-anchor="start" font-size="8" fill="var(--txL)">0 km</text>
+    <text x="${X(xmax).toFixed(1)}" y="${H-4}" text-anchor="end" font-size="8" fill="var(--txL)">${xmax} km</text>
+  </svg>`;
+}
+// On-trail refreshment stops per day (researched July 2026; late-Sept openings flagged, confirm). n=name, at=distance/time in, f=food pick, o=open status.
+const REFRESH={
+  1:{lunch:"No packed lunch today: buy it in Les Houches or Chamonix before you ride up. Trail stops are sparse, so carry enough.",buy:"Buy a full picnic in Les Houches before riding up (Spar + boulangerie); nothing to buy at Bellevue top.",stops:[
+    {n:"Café at Bellevue top station",at:"at the top (0 km)",f:"Coffee + snack with a Mont Blanc view before you set off",o:"While the lift runs, confirm",meal:false},
+    {n:"La Rioule, Col de Voza",at:"~1.5 km / 20–30 min",f:"Espresso + a slice of tarte, or a quick omelette (the one real stop, don't linger)",o:"Seasonal, confirm",meal:true}]},
+  2:{lunch:"Buy lunch in Les Contamines at the start, or eat a hot lunch at one of the refuges below (all do soup, omelettes, tarts).",buy:"Buy trail food in Les Contamines at the start (boulangerie + small supermarket). Last proper shop until Courmayeur.",stops:[
+    {n:"Refuge de Nant Borrant",at:"~6.5 km / ~1.5 h",f:"Famous apple & blueberry tarts, omelettes, soup",o:"Likely open, confirm",meal:true},
+    {n:"Refuge de la Balme",at:"~9 km / ~2.5 h",f:"Soup + tarte, the last food and water before the cols",o:"Likely open, confirm",meal:true},
+    {n:"Refuge de la Croix du Bonhomme",at:"~14.5 km / ~4.5 h",f:"Hot soup + gratin at the high point, sells picnic packs",o:"Borderline late-Sept (FFCAM often shuts ~20 Sep), confirm",meal:true}]},
+  3:{lunch:"Packed lunch ordered from Les Chambres du Soleil (24€, in the balance). If you skip it, the Italian rifugi below are superb hot-lunch stops. Note: the low/navette finish misses Maison Vieille.",buy:"Order the Chambres du Soleil packed lunch the night before, or carry supplies from Les Contamines. No grocery until Courmayeur.",stops:[
+    {n:"Refuge des Mottets",at:"~7 km / ~2 h",f:"Beloved dairy-farm hut: cheese dishes + tart, coffee before Col de la Seigne",o:"Open to 20 Sep 2026, shut after",meal:true,route:"All routes"},
+    {n:"Rifugio Elisabetta",at:"~13–14 km / ~5 h",f:"Signature polenta or fresh pasta, takeaway sandwiches (first Italian rifugio)",o:"Closes ~mid-Sept, borderline, confirm",meal:true,route:"All routes"},
+    {n:"Cabane du Combal (Lac Combal)",at:"~15–16 km",f:"Reliable coffee + food by the turquoise lake, and the navette/taxi pick-up point",o:"Likely open, confirm",meal:true,route:"All routes (navette leaves here)"},
+    {n:"Rifugio Maison Vieille (Col Chécrouit)",at:"~19–20 km",f:"Polenta concia / tagliatelle ai funghi, a trip highlight",o:"Likely open, confirm",meal:true,route:"Scenic Mont Favre route only, not the valley/navette finishes"}]},
+  5:{lunch:"Buy lunch in Courmayeur before leaving, or eat a hot lunch at Rifugio Bertone. Bonatti is your dinner, not a lunch stop.",buy:"Buy this day's trail food in Courmayeur before leaving (Via Roma shops + bakery). No shop from Bonatti onward.",stops:[
+    {n:"Rifugio Bertone",at:"~3–4 km / ~2 h (after the 800 m climb)",f:"Strong espresso, polenta, pasta, cake on the Grandes Jorasses terrace",o:"Open",meal:true},
+    {n:"Rifugio Bonatti",at:"end, ~12 km",f:"Your dinner stop; pre-order the Day 6 packed lunch (~€14) here the night before",o:"Open to 30 Sep",meal:false}]},
+  6:{lunch:"Packed lunch pre-ordered at Bonatti (~€14). Or a hot soup lunch at Rifugio Elena before the col.",buy:"No shop en route until La Fouly: carry the packed lunch pre-ordered at Bonatti. Restock at the La Fouly shop on arrival.",stops:[
+    {n:"Chalet Val Ferret (Arnouva)",at:"~6–7 km / ~2 h",f:"Outstanding hot chocolate + cake, lattes, sandwiches",o:"Open",meal:false},
+    {n:"Rifugio Elena",at:"~8–9 km / ~3 h",f:"Hearty bean soup, the last refuge before the col",o:"Borderline late-Sept (shut ~29 Sep in 2025), confirm",meal:true},
+    {n:"Alpage de La Peule",at:"~1 h past the col (Swiss side)",f:"Fresh alpage cheese & dairy, the day's tastiest, most local stop",o:"Likely open, confirm",meal:true}]},
+  7:{lunch:"Packed lunch from Maya-Joie, or a proper lunch in Champex on arrival (Le Cabanon).",buy:"Provision at the La Fouly shop at the start (by the car park/campsite). Nothing on trail is dependable until Champex.",stops:[
+    {n:"Riverside ice-cream / drinks hut",at:"between La Fouly and Praz-de-Fort",f:"Ice cream + cold drinks on a warm afternoon",o:"Summer pop-up, may be shut, confirm",meal:false},
+    {n:"Champex-Lac, Le Cabanon",at:"end, ~15 km",f:"Lakeside terrace lunch; bakery for quiches and cakes",o:"Open",meal:true}]},
+  8:{lunch:"Packed lunch from Chalet La Grange, or plan lunch around the famous Bovine rösti (carry a backup in case it's shut).",buy:"Stock up in Champex-Lac (Edelweiss Market + Gentiana bakery), the last proper shop. Trient has essentially none.",stops:[
+    {n:"Alpage de Bovine buvette",at:"~8–9 km / ~3 h",f:"⭐ Potato rösti with cheese (rated best meal of the trek), blueberry tart, charcuterie",o:"Some late-Sept reports found it shut, confirm and carry backup",meal:true},
+    {n:"Col de la Forclaz (Hôtel du Col)",at:"~13 km / ~4.5 h",f:"Homemade fruit tarts + Valais dishes, small shop. Optional Buvette du Glacier detour (rösti, glacier view)",o:"Reliable into autumn (Buvette du Glacier to 30 Sep)",meal:true}]},
+  9:{lunch:"⚠️ No lunch provided today and Trient has no shop. Buy in Champex the day before, OR make Refuge du Col de Balme your lunch (soup + tart).",buy:"Trient has no grocery: buy in Champex the day before, or order a packed lunch from your Trient lodging.",stops:[
+    {n:"Refuge Le Peuty",at:"~1–1.5 km / ~20 min",f:"Drinks, soup, simple snacks at the little campsite",o:"~June–late Sept, confirm",meal:false},
+    {n:"Refuge du Col de Balme",at:"~6.5 km / ~3 h (the col)",f:"Soup + homemade tart on the terrace at the border, your best lunch bet today",o:"Open daily 15 Jun–end Sept, reliable",meal:true},
+    {n:"Les Écuries de Charamillon",at:"~9 km / ~4 h (Le Tour descent)",f:"Hearty alpage farm dishes",o:"Lift-tied, likely closing, confirm",meal:true},
+    {n:"Le Tour village",at:"~11 km / ~4.75 h",f:"Village bars and cafés, last drink before Tré-le-Champ",o:"Open (valley level)",meal:true}]},
+  10:{lunch:"Packed lunch from Auberge la Boërne. Lac Blanc is the best hot-lunch stop; Flégère and Le Brévent are CLOSED, so carry a full day's food.",buy:"Tré-le-Champ has no shop: buy in Argentière (Sherpa / Carrefour Montagne, ~1 stop away) or order a packed lunch from Auberge la Boërne. Carry plenty.",stops:[
+    {n:"Refuge du Lac Blanc",at:"~6 km / ~3.5 h (after the ladders)",f:"⭐ Drink + slice of tart, or a hot potato/cheese plate on the Mont Blanc terrace. Cash only",o:"Open June–late Sept, your most reliable stop today",meal:true},
+    {n:"La Flégère buvette",at:"~9–10 km / ~5 h",f:"Lift-station self-service",o:"Gondola shuts 13 Sep 2026, assume CLOSED",meal:false},
+    {n:"Le Brévent, Le Panoramic",at:"~14 km / ~7 h",f:"Panoramic restaurant",o:"Lift-tied and closed for your dates, CLOSED",meal:false},
+    {n:"Refuge de Bellachat",at:"~16 km / ~8 h (on the descent)",f:"Omelette + blueberry tartlet, the best real meal on the way down",o:"Borderline mid-Sept, confirm",meal:true}]}
+};
+function rStages(){
+  return`<div class="ptitle">10-Day Trail Itinerary</div>`+
+  STAGES.map(s=>{
+    const open=S.openStage===s.day;
+    const dbg=s.rest?"#7A7268":s.country==="FR"?"var(--fr)":s.country==="IT"?"var(--it)":"var(--ch)";
+    const st=stayForDay(s.day);
+    const inf=st?(STAYINFO[st.id]||{}):{};
+    const dueC=/^(none|prepaid|pay by)/i.test(inf.balance||"")?"var(--ok)":"var(--amb)";
+    const atUrl=s.alltrails||("https://www.alltrails.com/explore?q="+encodeURIComponent(s.from+" to "+s.to+" Tour du Mont Blanc"));
+    return`<div class="card" style="margin-bottom:8px">
+  <button class="srow" data-stage="${s.day}">
+    <div class="dbage" style="width:27px;height:27px;border-radius:6px;background:${s.rest?"var(--sto)":dbg};display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:600;flex-shrink:0">${s.day}</div>
+    <div style="flex:1">
+      <div style="font-size:13px;font-weight:500">${s.from} → ${s.to}</div>
+      <div style="font-size:11px;color:var(--txL);margin-top:2px">${s.date} · ${s.dist}${!s.rest?" · "+s.time:""}</div>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center">
+      ${s.rest?`<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:var(--surB);color:var(--sto);font-weight:600">REST</span>`:
+      `<span class="sbadge" style="background:${dbg}">${s.country}</span>
+      <span class="diff" style="color:${DK[s.diff]}">${DC[s.diff]}</span>`}
+      <span style="color:var(--txL);font-size:13px">${open?"▲":"▼"}</span>
+    </div>
+  </button>
+  ${open?`<div style="padding:0 14px 14px;border-top:1px solid var(--bor)">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:10px 0">
+      ${s.rest?`<div class="dcell"><div class="l">Location</div><div class="v">Courmayeur, Italy</div></div><div class="dcell"><div class="l">Elevation</div><div class="v">${s.alt}</div></div>`:`
+      <div class="dcell"><div class="l">Distance</div><div class="v">${s.dist}</div></div>
+      <div class="dcell"><div class="l">Elevation gain</div><div class="v">${s.gain}</div></div>
+      <div class="dcell"><div class="l">Elevation loss</div><div class="v">${s.loss}</div></div>
+      <div class="dcell"><div class="l">Max altitude</div><div class="v">${s.alt}</div></div>`}
+    </div>
+    <div style="font-size:13px;line-height:1.65;color:var(--txM);margin-bottom:10px">${s.notes}</div>
+    ${s.start?`<div class="nbox" style="background:#EAF1FB;border:1px solid #B9CDE8"><div class="nh" style="color:var(--fr)">🚆 Getting to the start</div><div class="nb2">${esc(s.start)}</div></div>`:""}
+    ${s.restday?`<div style="font-size:11px;font-weight:600;color:var(--txL);margin:12px 0 6px">🧖 REST DAY IN COURMAYEUR, WHAT TO DO</div>${s.restday.map(r=>`<div class="nbox" style="background:var(--surB)"><div class="nh" style="color:var(--for)">${esc(r.t)}</div><div class="nb2">${esc(r.d)}</div></div>`).join("")}`:""}
+    ${!s.rest?`<a href="${atUrl}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--forM);text-decoration:none;border:1px solid var(--bor);background:var(--surB);border-radius:7px;padding:6px 11px;margin-bottom:10px">🥾 View route on AllTrails →</a>`:""}
+    ${!s.rest&&ELEV[s.day]?`<div style="background:var(--surB);border:1px solid var(--bor);border-radius:8px;padding:9px 11px 5px;margin-bottom:10px">
+      <div style="font-size:10px;font-weight:600;color:var(--txL);letter-spacing:.5px;margin-bottom:1px">ELEVATION PROFILE <span style="font-weight:400;text-transform:none">· approximate</span></div>
+      ${elevSVG(s.day)}
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;margin-top:3px"><span style="color:var(--ok);font-weight:600">▲ ${s.gain}</span><span style="color:var(--txL);font-size:10px">Accurate track on AllTrails</span><span style="color:var(--it);font-weight:600">▼ ${s.loss}</span></div>
+    </div>`:""}
+    ${s.warns.length?`<div class="warn-box"><div class="w">${s.warns.join("<br>")}</div></div>`:""}
+    ${s.skip?`<div class="nbox" style="background:#FFF9EE;border:1px solid var(--ambL)"><div class="nh" style="color:var(--amb)">✂️ Dull stretch you can skip</div><div class="nb2">${esc(s.skip)}</div></div>`:""}
+    ${s.plans.length?`<div style="font-size:11px;font-weight:600;color:var(--txL);margin:12px 0 5px">${s.plans.length>1?"ROUTE OPTIONS":"THE ROUTE"}</div>
+    ${s.plans.length>1?`<div style="font-size:11px;color:var(--txL);margin-bottom:7px">All finish at the same booked accommodation. <span style="color:var(--for);font-weight:600">⭐ classic</span> · <span style="color:var(--amb);font-weight:600">📸 most scenic</span> · <span style="color:var(--for);font-weight:600">✓ your pick</span>.</div>`:''}
+    ${s.plans.map(p=>`<div class="nbox" style="background:var(--surB)${p.pref?';border:1.5px solid var(--for)':''}"><div class="nh" style="color:${p.grade==='Easier'?'var(--ok)':p.grade==='Harder'?'var(--amb)':'var(--sto)'}">${p.grade==='Easier'?'▽':p.grade==='Harder'?'△':'●'} ${esc(p.grade)}${p.label?' · '+esc(p.label):''}${p.pref?` <span style="font-size:9px;padding:1px 6px;border-radius:4px;background:var(--for);color:#fff;font-weight:700">✓ PICK</span>`:''}</div>${p.tag?`<div style="margin:3px 0 0"><span style="font-size:9px;padding:1px 6px;border-radius:4px;background:${/scenic/i.test(p.tag)?'#FBF0DA':'#E6F3EC'};color:${/scenic/i.test(p.tag)?'var(--amb)':'var(--for)'};font-weight:600">${esc(p.tag)}</span></div>`:''}${[p.dist?'📏 '+esc(p.dist):'',p.gain?'▲ '+esc(p.gain):'',p.loss?'▼ '+esc(p.loss):'',p.time?'⏱ '+esc(p.time):''].filter(Boolean).length?`<div style="font-size:11px;color:var(--txL);margin:3px 0;line-height:1.5">${[p.dist?'📏 '+esc(p.dist):'',p.gain?'▲ '+esc(p.gain):'',p.loss?'▼ '+esc(p.loss):'',p.time?'⏱ '+esc(p.time):''].filter(Boolean).join(' · ')}</div>`:''}<div class="nb2">${esc(p.why)}</div></div>`).join("")}`:""}
+    <div style="font-size:11px;font-weight:600;color:var(--txL);margin:12px 0 6px">MEALS</div>
+    <div style="background:var(--surB);border-radius:8px;padding:2px 10px;margin-bottom:10px">
+      <div class="mrow"><div class="mico" style="background:var(--amb)">B</div><div style="font-size:12.5px"><strong style="color:var(--txL);font-size:10px;display:block">BREAKFAST</strong>${esc(s.meals.b)}</div></div>
+      <div class="mrow"><div class="mico" style="background:var(--forM)">L</div><div style="font-size:12.5px"><strong style="color:var(--txL);font-size:10px;display:block">LUNCH</strong>${esc(s.meals.l)}</div></div>
+      <div class="mrow"><div class="mico" style="background:var(--for)">D</div><div style="font-size:12.5px"><strong style="color:var(--txL);font-size:10px;display:block">DINNER</strong>${esc(s.meals.d)}</div></div>
+    </div>
+    ${REFRESH[s.day]?`<div style="font-size:11px;font-weight:600;color:var(--txL);margin:12px 0 6px">☕ SNACK, COFFEE & LUNCH STOPS ON THE WAY</div>
+    <div style="background:var(--surB);border-radius:8px;padding:8px 11px;margin-bottom:10px">
+      <div style="font-size:11.5px;color:var(--txM);margin-bottom:7px;padding:7px 9px;background:${REFRESH[s.day].lunch.indexOf('⚠️')===0?'#FFF4EC':'var(--sur)'};border:1px solid ${REFRESH[s.day].lunch.indexOf('⚠️')===0?'#E8A06A':'var(--bor)'};border-radius:6px">🥪 <strong>Lunch today:</strong> ${esc(REFRESH[s.day].lunch)}</div>
+      ${REFRESH[s.day].stops.map(t=>`<div style="padding:6px 0;border-bottom:1px solid var(--bor)"><div style="font-size:12.5px;font-weight:500">${esc(t.n)} <span style="font-weight:400;color:var(--txL);font-size:11px">· ${esc(t.at)}</span> ${t.meal?`<span style="font-size:9px;padding:1px 5px;border-radius:4px;background:#E6F3EC;color:var(--ok);font-weight:600">🍴 LUNCH</span>`:`<span style="font-size:9px;padding:1px 5px;border-radius:4px;border:1px solid var(--bor);color:var(--txL);font-weight:600">☕ SNACK</span>`}</div><div style="font-size:11.5px;color:var(--txM);margin-top:2px">${esc(t.f)}</div><div style="font-size:10.5px;color:var(--txL);margin-top:1px">🕐 ${esc(t.o)}${t.route?` · 🧭 ${esc(t.route)}`:''}</div></div>`).join("")}
+      <div style="font-size:11.5px;color:var(--txM);margin-top:7px">🛒 ${esc(REFRESH[s.day].buy)}</div>
+    </div>`:""}
+    <div class="nbox" style="background:#EDF2FF"><div class="nh" style="color:var(--fr)">⚕ Physio plan</div><div class="nb2">${s.physio}</div></div>
+    ${st?`<div style="font-size:11px;font-weight:600;color:var(--txL);margin:12px 0 6px">ACCOMMODATION</div>
+    <div style="background:var(--sur);border:1px solid var(--bor);border-radius:8px;padding:10px 12px;margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:5px">
+        <div><div style="font-size:13px;font-weight:600">${esc(st.place)}</div><div style="font-size:11px;color:var(--txL);margin-top:1px">${esc(st.loc)} · ${esc(inf.room||st.type)}</div></div>
+        <div style="flex-shrink:0">${st.payBy==="PAID"?`<span class="paid-badge paid">✓ Prepaid</span>`:st.payBy==="CASH"?`<span class="paid-badge cash">💰 Cash</span>`:`<span class="paid-badge owing">Pay by ${esc(st.payBy)}</span>`}</div>
+      </div>
+      ${(PAYINFO[st.id]||inf.balance)?`<div style="display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--bor);font-size:12px"><div style="min-width:84px;color:var(--txL);flex-shrink:0">💳 Payment</div><div style="flex:1;color:var(--txM)">${esc(PAYINFO[st.id]||inf.balance)}</div></div>`:""}
+      ${inf.board?`<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--bor);font-size:12px"><div style="min-width:84px;color:var(--txL);flex-shrink:0">🍽 Board</div><div style="flex:1">${esc(inf.board)}</div></div>`:""}
+      ${inf.lunch?`<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--bor);font-size:12px"><div style="min-width:84px;color:var(--txL);flex-shrink:0">🥪 Lunch</div><div style="flex:1">${esc(inf.lunch)}</div></div>`:""}
+      ${inf.liner?`<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--bor);font-size:12px"><div style="min-width:84px;color:var(--txL);flex-shrink:0">🛌 Silk liner</div><div style="flex:1">${esc(inf.liner)}</div></div>`:""}
+      ${inf.towels?`<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--bor);font-size:12px"><div style="min-width:84px;color:var(--txL);flex-shrink:0">🧺 Towels</div><div style="flex:1">${esc(inf.towels)}</div></div>`:""}
+      ${inf.wifi?`<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--bor);font-size:12px"><div style="min-width:84px;color:var(--txL);flex-shrink:0">📶 Wifi / signal</div><div style="flex:1">${esc(inf.wifi)}</div></div>`:""}
+      ${inf.shower?`<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--bor);font-size:12px"><div style="min-width:84px;color:var(--txL);flex-shrink:0">🚿 Shower</div><div style="flex:1">${esc(inf.shower)}</div></div>`:""}
+      ${inf.checkin?`<div style="display:flex;gap:8px;padding:5px 0;font-size:12px"><div style="min-width:84px;color:var(--txL);flex-shrink:0">🕒 Check-in</div><div style="flex:1">${esc(inf.checkin)}</div></div>`:""}
+      <div style="font-size:11px;color:var(--txL);margin-top:8px">Full booking details in the Stays tab →</div>
+    </div>`:""}
+    <div style="font-size:11px;font-weight:600;color:var(--txL);margin:12px 0 6px">CONTINGENCY PLANS</div>
+    ${s.weather?`<div class="nbox" style="background:#EAF1FB;border:1px solid #B9CDE8"><div class="nh" style="color:var(--fr)">☔ Bad weather</div><div class="nb2">${esc(s.weather)}</div></div>`:""}
+    ${s.escape?`<div class="nbox" style="background:#FFF0F0;border:1px solid #E8B0B0"><div class="nh" style="color:var(--it)">🚑 Injury · exit to next stay</div><div class="nb2">${esc(s.escape)}</div></div>`:""}
+  </div>`:""}
+</div>`}).join("");}
+
+// ── STAYS ─────────────────────────────────────────────────────────────────────
+function rStays(){
+  const isPaid=s=>s.payBy==="PAID"||s.payBy==="CASH";
+  const row=(l,v)=>v?`<div style="display:flex;gap:8px;padding:5px 0;border-top:1px solid var(--bor);font-size:11.5px"><div style="min-width:96px;color:var(--txL);flex-shrink:0">${l}</div><div style="flex:1;color:var(--txM)">${esc(v)}</div></div>`:"";
+  return`<div class="ptitle">Accommodation Tracker</div>`+
+  STAYS.map(s=>`<div class="card cp" style="margin-bottom:9px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+    <div style="flex:1;margin-right:8px">
+      <div style="font-size:13px;font-weight:500">${s.place}</div>
+      <div style="font-size:11px;color:var(--txL);margin-top:2px">${s.night} · ${s.loc} · ${s.type}</div>
+    </div>
+    <div style="text-align:right;flex-shrink:0">
+      <div style="font-size:13px;font-weight:500;color:var(--txt)">${s.cost}</div>
+      <div style="margin-top:4px">
+        ${s.payBy==="PAID"?`<span class="paid-badge paid">✓ Paid</span>`:
+          s.payBy==="CASH"?`<span class="paid-badge cash">💰 Cash</span>`:
+          `<span class="paid-badge owing">Due: ${s.payBy}</span>`}
+      </div>
+      ${s.paid&&s.paid!=="–"&&s.paid!=="💰 Cash on arrival"?`<div style="font-size:10.5px;color:var(--ok);margin-top:2px">Paid: ${s.paid}</div>`:""}
+    </div>
+  </div>
+  ${(i=>i?`<div style="margin:2px 0 9px">${row("🛏 Room",i.room)}${row("🍽 Board",i.board)}${row("💳 Payment",PAYINFO[s.id]||i.balance)}${row("🥪 Lunch",i.lunch)}${row("🛌 Silk liner",i.liner)}${row("🧺 Towels",i.towels)}${row("📶 Wifi / signal",i.wifi)}${row("🚿 Shower",i.shower)}${row("🕒 Check-in",i.checkin)}${row("💳 Pay method",i.pay)}${row("📞 Contact",i.contact)}${row("📧 Email",(BOOK[s.id]||{}).email)}${row("📇 Booked via",(BOOK[s.id]||{}).src)}${row("📝 Notes",i.extra)}</div>`:"")(STAYINFO[s.id])}
+  <input class="inp" placeholder="Confirmation number / notes…" value="${esc(S.acNotes[s.id]||"")}" data-ac="${s.id}">
+</div>`).join("")+
+`<div class="card cp" style="margin-top:4px">
+  <div class="serif" style="font-size:16px;font-weight:600;color:var(--for);margin-bottom:11px">Budget &amp; Balances</div>
+  <div style="font-size:11px;font-weight:600;color:var(--txL);margin-bottom:6px;letter-spacing:1px">TMB PACKAGE · ORDER 4289941 (DAYS 2, 6, 7, 9)</div>
+  ${[{l:"Package total",v:"€1,352.38"},{l:"Paid",v:"€1,079.34"},{l:"Remaining, meal balances on arrival",v:"€273.04"}].map(b=>`<div class="budget-row"><div style="font-size:13px;font-weight:500">${b.l}</div><div class="b-amt">${b.v}</div></div>`).join("")}
+  <div style="font-size:11px;font-weight:600;color:var(--txL);margin:14px 0 6px;letter-spacing:1px">SEPARATE BOOKINGS</div>
+  ${[{l:"Trient · Day 8, Booking.com, prepaid",v:"CHF 176 · AUD 310.84"},{l:"Rifugio Bonatti · Day 5, cash on arrival",v:"~€193 cash"}].map(b=>`<div class="budget-row"><div style="font-size:13px;font-weight:500">${b.l}</div><div class="b-amt">${b.v}</div></div>`).join("")}
+  <div style="font-size:11px;font-weight:600;color:var(--txL);margin:14px 0 6px;letter-spacing:1px">CASH TO CARRY, BALANCES ON ARRIVAL</div>
+  ${[{l:"€ · Rifugio Bonatti (Day 5)",v:"~€190 + €3 tax"},{l:"€ · Les Chambres du Soleil (Day 2)",v:"24€ + tax"},{l:"€ · Auberge la Boërne (Day 9)",v:"24€ + tax"},{l:"CHF · Chalet La Grange (Day 7)",v:"~136 CHF · cash only"},{l:"CHF · Maya-Joie (Day 6)",v:"~71 CHF · cash/card"}].map(b=>`<div class="budget-row"><div style="font-size:13px;font-weight:500">${b.l}</div><div class="b-amt">${b.v}</div></div>`).join("")}
+</div>`;}
+
+// ── GEAR ─────────────────────────────────────────────────────────────────────
+function rGear(){
+  const pd=gDone(),pt=gTotal();
+  const toBuy=Object.entries(GEAR).map(([cat,items])=>[cat,items.filter(i=>!i.owned)]).filter(([,items])=>items.length);
+  const buyCount=toBuy.reduce((n,[,items])=>n+items.length,0);
+  const shopping=`<div class="card cp" style="margin-top:6px;margin-bottom:10px;border-color:var(--ambL)">
+    <div class="serif" style="font-size:16px;font-weight:600;color:var(--amb);margin-bottom:2px">🛒 Shopping list, still to buy &amp; research (${buyCount})</div>
+    <div style="font-size:11px;color:var(--txL);margin-bottom:4px">Quick view of what's not owned yet. Brands and the why are in the categories above. Vanessa: check this against your own kit.</div>
+    ${toBuy.map(([cat,items])=>`<div style="padding:5px 0;border-top:1px solid var(--bor)"><div style="font-size:10px;font-weight:600;color:var(--txL);text-transform:uppercase;letter-spacing:.5px;margin-bottom:1px">${cat}</div><div style="font-size:12px;color:var(--txM);line-height:1.5">${items.map(i=>esc(i.item)).join(" · ")}</div></div>`).join("")}
+  </div>`;
+  return`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+  <div class="ptitle" style="margin-bottom:0">Gear Checklist</div>
+  <div style="font-size:13px;font-weight:500;color:${pd===pt?"var(--ok)":"var(--amb)"}">${pd}/${pt} packed</div>
+</div>
+<div style="font-size:12px;color:var(--txL);line-height:1.55;margin-bottom:10px">Addy's kit, and a template Vanessa can copy. Quantities are in each item name; the tag shows what is <strong>SOURCED</strong> vs still <strong>TO BUY</strong>, and the italic note says why it earns its place. Tick items as you pack them.</div>
+<div class="mbar" style="height:6px;margin-bottom:12px"><div class="mfil" style="width:${(pd/pt)*100}%;background:${pd===pt?"var(--ok)":"var(--amb)"}"></div></div>
+${Object.entries(GEAR).map(([cat,items])=>{
+  const cd=items.filter(i=>S.gear[`${cat}||${i.item}`]).length;
+  return`<div class="card" style="margin-bottom:10px">
+  <div class="shdr"><span style="font-weight:500;font-size:13px">${cat}</span><span style="font-size:11px;color:var(--txL)">${cd}/${items.length}</span></div>
+  <div style="padding:4px 14px">
+    ${items.map(item=>{
+      const k=`${cat}||${item.item}`,c=!!S.gear[k];
+      return`<div class="gi${c?" done":""}" data-gear="${esc(k)}" style="${c?"opacity:0.45":""}">
+        <div class="ck${c?" on":""}"></div>
+        <div style="flex:1">
+          <div style="font-size:13px;${c?"text-decoration:line-through;":""}">${item.item}</div>
+          ${item.rec?`<div style="font-size:11px;color:var(--txL);margin-top:1px">${item.rec}</div>`:""}
+          ${item.why?`<div style="font-size:11px;color:var(--txM);margin-top:2px;font-style:italic">${esc(item.why)}</div>`:""}
+        </div>
+        <div>${item.owned?`<span class="owned-tag">SOURCED</span>`:`<span class="tobuy-tag">TO BUY</span>`}</div>
+      </div>`;
+    }).join("")}
+  </div>
+</div>`}).join("")}
+${shopping}`;
+}
+
+// ── TO-DO ─────────────────────────────────────────────────────────────────────
+function rTodos(){
+  const td=tDone(),tt=tTotal();
+  return`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px">
+  <div class="ptitle" style="margin-bottom:0">Action Items</div>
+  <div style="font-size:13px;font-weight:500;color:${td===tt?"var(--ok)":"var(--amb)"}">${td}/${tt}</div>
+</div>
+<div class="mbar" style="height:6px;margin-bottom:13px"><div class="mfil" style="width:${(td/tt)*100}%;background:${td===tt?"var(--ok)":"var(--amb)"}"></div></div>
+${Object.entries(TODOS).map(([cat,items])=>{
+  const cd=items.filter(i=>S.todos[i.id]).length;
+  return`<div class="card" style="margin-bottom:10px">
+  <div class="shdr"><span style="font-weight:500;font-size:13px">${cat}</span><span style="font-size:11px;color:var(--txL)">${cd}/${items.length}</span></div>
+  <div style="padding:4px 14px">
+    ${items.map(item=>{
+      const done=!!S.todos[item.id];
+      return`<div class="todo-item${done?" done":""}" data-todo="${item.id}">
+        <div class="ck${done?" on":""}"></div>
+        <div style="flex:1">
+          <span class="todo-text" style="font-size:13px">${esc(item.task)}</span>
+        </div>
+        ${item.urgent?`<span class="urgent-chip">URGENT</span>`:item.date?`<span class="date-chip">${item.date}</span>`:""}
+      </div>`;
+    }).join("")}
+  </div>
+</div>`}).join("")}`;
+}
+
+// ── JOURNAL ───────────────────────────────────────────────────────────────────
+function rJournal(){
+  if(S.activeJournal!==null){
+    const s=STAGES.find(x=>x.day===S.activeJournal);
+    return`<button class="back-btn" id="jback">← Back to stages</button>
+<div class="serif" style="font-size:20px;font-weight:600;margin-bottom:3px">Day ${s.day}: ${s.from} → ${s.to}</div>
+<div style="font-size:12px;color:var(--txL);margin-bottom:13px">${s.date} · ${s.dist}</div>
+<textarea class="inp" id="jtext" style="width:100%;min-height:240px;line-height:1.75;font-size:13.5px"
+  placeholder="Write about today, the terrain, how your body felt, the views, weather, moments, people…">${esc(S.jDraft[s.day]||"")}</textarea>
+<div style="display:flex;gap:8px;margin-top:10px">
+  <button class="btn-p" id="jsave">Save Entry</button>
+  <button class="btn-s" id="jcancel">Cancel</button>
+</div>`;
+  }
+  return`<div class="ptitle">Trek Journal</div>
+<div style="font-size:13px;color:var(--txL);margin-bottom:13px">One entry per stage, write during the trek. Saved persistently.</div>
+${STAGES.map(s=>{
+  const has=S.journal[s.day]&&S.journal[s.day].length>0;
+  return`<button class="jbtn${has?" has":""}" data-jopen="${s.day}">
+  <div style="width:27px;height:27px;border-radius:6px;background:${has?"var(--for)":"var(--bor)"};display:flex;align-items:center;justify-content:center;color:${has?"#fff":"var(--txL)"};font-size:12px;font-weight:600;flex-shrink:0">${s.day}</div>
+  <div style="flex:1;text-align:left">
+    <div style="font-size:13px;font-weight:500">${s.from} → ${s.to}</div>
+    <div style="font-size:11px;color:var(--txL)">${s.date}${!s.rest?" · "+s.dist:""}</div>
+    ${has?`<div style="font-size:11px;color:var(--txM);font-style:italic;margin-top:3px">${esc(S.journal[s.day].slice(0,70))}${S.journal[s.day].length>70?"…":""}</div>`:""}
+  </div>
+  <div style="color:var(--txL);font-size:15px">→</div>
+</button>`;}).join("")}`;
+}
+
+// ── CAMPING ───────────────────────────────────────────────────────────────────
+function rCamping(){
+  const dinC={
+    "✅ Easy":"var(--ok)","✅ Possible":"var(--ok)","✅ YES, Celebrate!":"var(--ok)",
+    "⚠️ Ask":"var(--amb)","⚠️ Tricky":"var(--amb)",
+    "❌ Not possible":"var(--it)"
+  };
+  return`<div class="ptitle">🏕 Camping Companion Guide</div>
+<div style="font-size:13px;color:var(--txL);margin-bottom:10px">Logistics for the companions tenting the route.</div>
+<div class="warn-box" style="margin-bottom:13px"><div class="w"><strong>⚠️ If the companions aren't coming, cancel in time to avoid charges:</strong><br>
+• Extra Booking.com room reservations held for them: cancel by <strong>10 Aug</strong> (see To-Do).<br>
+• 3rd-person dinners you asked about (Courmayeur Days 3–4, Maya-Joie Day 6, La Grange Day 7, Trient Day 8): tell the property as soon as you know, at least 24–48 h ahead.<br>
+• Campsites below are turn-up, so no booking or cancellation needed there.<br>
+• Any shared hotel nights follow the free-cancel cutoffs in the Stays tab (Aiguille Verte 11 Aug, Gaï Soleil 13 Aug, Crampon 31 Aug, Geneva 21 Sep).</div></div>
+${CAMPING.map(c=>`<div class="card" style="margin-bottom:10px">
+  <div class="shdr">
+    <div>
+      <div style="font-weight:500;font-size:13px">Day ${c.day} · ${c.date} · ${c.loc}</div>
+      <div style="font-size:11px;color:var(--txL);margin-top:2px">Your stay: ${c.yourStay}</div>
+    </div>
+    <div style="text-align:right;font-size:12px;font-weight:600;color:${dinC[c.din]||"var(--txL)"};flex-shrink:0;margin-left:8px">${c.din}</div>
+  </div>
+  <div class="cp" style="padding-top:10px">
+    ${c.camp.startsWith("❌")?
+    `<div style="background:#FFF0F0;border-radius:8px;padding:10px;font-size:12.5px;color:var(--it);font-weight:500">${c.camp}</div>
+    ${c.note?`<div style="font-size:12px;color:var(--txM);margin-top:8px;font-style:italic">${c.note}</div>`:""}`:
+    `<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px">
+      <div class="dcell"><div class="l">Campsite</div><div class="v" style="font-size:12px">${c.camp}</div></div>
+      <div class="dcell"><div class="l">Cost</div><div class="v" style="font-size:12px">${c.cost||"–"}</div></div>
+      <div class="dcell"><div class="l">Distance from you</div><div class="v" style="font-size:12px">${c.dist}</div></div>
+      <div class="dcell"><div class="l">Status</div><div class="v" style="font-size:12px">${c.open}</div></div>
+    </div>
+    ${c.fac?`<div style="font-size:11.5px;color:var(--txM);margin-bottom:8px">🚿 ${c.fac}</div>`:""}
+    ${c.web?`<div style="font-size:11.5px;color:var(--fr);margin-bottom:8px">🌐 ${c.web}</div>`:""}
+    <div class="nbox" style="background:${c.din.startsWith("✅")?"#E6F3EC":c.din.startsWith("⚠️")?"#FFF4E0":"#FFF0F0"}">
+      <div class="nh" style="color:${dinC[c.din]||"var(--txL)"}">🍽 Dinner Together: ${c.din}</div>
+      <div class="nb2">${c.dinNote}</div>
+    </div>
+    ${c.note?`<div style="font-size:12px;color:var(--txM);font-style:italic">${c.note}</div>`:""}`}
+  </div>
+</div>`).join("")}`;
+}
+
+// ── SPLIT (VANESSA) ───────────────────────────────────────────────────────────
+function rTotals(){
+  const T=[
+    {d:1,r:"Les Houches → Les Contamines · Col de Tricot 📸",km:18,g:1050,l:1050},
+    {d:2,r:"Les Contamines → Les Chapieux · Col des Fours 📸",km:20,g:1500,l:1100},
+    {d:3,r:"Les Chapieux → Courmayeur · Mont Favre ⭐📸",km:21,g:1300,l:1650},
+    {d:4,r:"Courmayeur, rest day",km:0,g:0,l:0,rest:true},
+    {d:5,r:"Courmayeur → Rifugio Bonatti · Mont de la Saxe 📸",km:14,g:1360,l:600},
+    {d:6,r:"Rifugio Bonatti → La Fouly · Grand Col Ferret ⭐📸",km:20.2,g:895,l:1410},
+    {d:7,r:"La Fouly → Champex-Lac ⭐",km:15.4,g:420,l:565},
+    {d:8,r:"Champex-Lac → Trient · Bovine ⭐",km:16.5,g:742,l:682},
+    {d:9,r:"Trient → Tré-le-Champ · Posettes ⭐📸",km:14,g:1150,l:1000},
+    {d:10,r:"Tré-le-Champ → Chamonix · Lac Blanc ⭐📸",km:18.2,g:1000,l:1400}
+  ];
+  const tk=T.reduce((a,x)=>a+x.km,0),tg=T.reduce((a,x)=>a+x.g,0),tl=T.reduce((a,x)=>a+x.l,0);
+  const n=x=>x.toLocaleString("en-AU");
+  const th='style="padding:6px 7px;border-bottom:2px solid var(--bor);text-align:left;color:var(--txL);font-weight:600"';
+  const thr='style="padding:6px 7px;border-bottom:2px solid var(--bor);text-align:right;color:var(--txL);font-weight:600"';
+  const rows=T.map(x=>`<tr><td style="padding:5px 7px;border-bottom:1px solid var(--bor);font-weight:600;white-space:nowrap">${x.d}</td><td style="padding:5px 7px;border-bottom:1px solid var(--bor)">${esc(x.r)}</td><td style="padding:5px 7px;border-bottom:1px solid var(--bor);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap">${x.rest?'<span style="color:var(--txL)">rest</span>':x.km+" km"}</td><td style="padding:5px 7px;border-bottom:1px solid var(--bor);text-align:right;color:var(--ok);font-variant-numeric:tabular-nums;white-space:nowrap">${x.g?"+"+n(x.g):"–"}</td><td style="padding:5px 7px;border-bottom:1px solid var(--bor);text-align:right;color:var(--it);font-variant-numeric:tabular-nums;white-space:nowrap">${x.l?"−"+n(x.l):"–"}</td></tr>`).join("");
+  return`<div class="ptitle">📊 Trip Totals</div>
+  <div style="font-size:13px;color:var(--txL);line-height:1.6;margin-bottom:12px">Totals for <strong>your chosen routes</strong> (the ✓ pick in each stage, scenic where selected). Taking the easier finishes on Days 1, 2, 5 and 9 instead would bring it down to roughly the classic ~152 km. ⭐ classic · 📸 most scenic.</div>
+  <div class="g3" style="margin-bottom:12px">
+    <div class="sc"><div class="sv">~${tk.toFixed(0)} km</div><div class="sl">Total distance</div></div>
+    <div class="sc"><div class="sv">+${n(tg)} m</div><div class="sl">Total ascent</div></div>
+    <div class="sc"><div class="sv">−${n(tl)} m</div><div class="sl">Total descent</div></div>
+  </div>
+  <div class="card cp">
+    <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead><tr><th ${th}>Day</th><th ${th}>Route</th><th ${thr}>Dist</th><th ${thr}>▲ Up</th><th ${thr}>▼ Down</th></tr></thead>
+      <tbody>${rows}<tr style="font-weight:700"><td style="padding:7px"></td><td style="padding:7px">Trip total</td><td style="padding:7px;text-align:right;font-variant-numeric:tabular-nums">~${tk.toFixed(0)} km</td><td style="padding:7px;text-align:right;color:var(--ok);font-variant-numeric:tabular-nums">+${n(tg)}</td><td style="padding:7px;text-align:right;color:var(--it);font-variant-numeric:tabular-nums">−${n(tl)}</td></tr></tbody>
+    </table></div>
+  </div>
+  <div style="font-size:11px;color:var(--txL);margin-top:8px">Distances and elevations are approximate. Your scenic-pick route (~157 km) sits between the classic lower-variant line (~152 km) and the full standard TMB (~168 km). Change any stage's pick and this shifts.</div>`;
+}
+
+function rSplit(){
+  const RATE={AUD:1,EUR:1.65,CHF:1.70};
+  const fmt=(c,n)=>{const v=n.toLocaleString("en-AU",{minimumFractionDigits:2,maximumFractionDigits:2});return c==="EUR"?"€"+v:c+" "+v;};
+  const aud=n=>"AUD "+n.toLocaleString("en-AU",{minimumFractionDigits:2,maximumFractionDigits:2});
+  // Shared accommodations only (Geneva excluded: Vanessa not coming). room=room price, paidRoom=amount of room already paid, extra=on-arrival extras in extraCur.
+  const ITEMS=[
+    {id:"s0",name:"Aiguille Verte · Chamonix",night:"11–12 Sep · pre-trek",cur:"AUD",room:888.14,paidRoom:0,when:"Pay online by 10 Aug",incl:"Apartment, room only",note:"Split depends on Vanessa's arrival (11th/12th): if she lands on the 12th, Addy covers the 11th and they split only the 12th."},
+    {id:"s1",name:"Gaï Soleil · Les Contamines",night:"13 Sep · Day 1",cur:"AUD",room:257.14,paidRoom:0,when:"Pay online by 12 Aug",incl:"Room only (breakfast/dinner are paid extras if taken)"},
+    {id:"s2",name:"Les Chambres du Soleil · Les Chapieux",night:"14 Sep · Day 2",cur:"EUR",room:194.24,paidRoom:194.24,incl:"Half-board (dinner + breakfast)",extraCur:"EUR",extra:24},
+    {id:"s3",name:"Hôtel Crampon · Courmayeur",night:"15–16 Sep · Days 3–4",cur:"AUD",room:655.68,paidRoom:0,when:"Pay online by 30 Aug",incl:"B&B (breakfast only), 2 nights"},
+    {id:"s4",name:"Rifugio Bonatti · Val Ferret",night:"17 Sep · Day 5",cur:"EUR",room:190,paidRoom:0,when:"CASH only on arrival",incl:"Half-board (dinner + breakfast)",extraCur:"EUR",extra:20},
+    {id:"s5",name:"Auberge Maya-Joie · La Fouly",night:"18 Sep · Day 6",cur:"CHF",room:190,paidRoom:190,incl:"Room (bed), dinner is a paid extra on arrival",extraCur:"CHF",extra:71},
+    {id:"s6",name:"Chalet La Grange · Champex-Lac",night:"19 Sep · Day 7",cur:"CHF",room:198,paidRoom:99,incl:"Half-board (dinner + breakfast)",extraCur:"EUR",extra:30},
+    {id:"s7",name:"Auberge du Mont Blanc · Trient",night:"20 Sep · Day 8",cur:"AUD",room:310.72,paidRoom:310.72,incl:"Half-board (dinner + breakfast) · ≈216 CHF",extraCur:"CHF",extra:13},
+    {id:"s8",name:"Auberge la Boërne · Tré-le-Champ",night:"21 Sep · Day 9",cur:"EUR",room:225,paidRoom:225,incl:"Half-board (dinner + breakfast)",extraCur:"EUR",extra:24},
+    {id:"s9",name:"Aiguille Verte · Chamonix",night:"22 Sep · Day 10 · post-trek",cur:"EUR",room:253.40,paidRoom:253.40,incl:"Apartment, room only",note:"€500 card deposit on arrival (refunded after)."},
+    {id:"s10",name:"Eastwest Hôtel by Malone · Geneva",night:"23–24 Sep · pre-flight (2 nights)",cur:"AUD",room:895,paidRoom:0,when:"Pay online by 20 Sep",incl:"Double room, 4-star (breakfast ~CHF 29 extra)",vShare:223.75,note:"Vanessa stays the night of the 23rd and leaves on the 24th, so she shares ONE night only: her half ≈ AUD 224, not half the 2-night total. ⚠️ Unconfirmed: Addy may fly to Paris earlier for work and depart from there, which would change the 24th night and the return flight."}
+  ];
+  const CASH=[
+    {cur:"EUR",amt:"~€215",fr:"Bonatti (Day 5), CASH ONLY: room + tax + Day 6 lunch + slippers. Plus €1/€2 coins for the showers"},
+    {cur:"EUR",amt:"€24",fr:"Les Chambres du Soleil (Day 2): 2× lunch + tourist tax"},
+    {cur:"EUR",amt:"€24",fr:"Auberge la Boërne (Day 9): 2× lunch + tourist tax"},
+    {cur:"CHF",amt:"~136",fr:"Chalet La Grange (Day 7): 99 room balance + 30€ picnic + tax (or pay in €, card +3%)"},
+    {cur:"CHF",amt:"~71",fr:"Maya-Joie (Day 6): dinner + picnic + tax (card ok, carry as backup)"}
+  ];
+  let gT=0,gP=0,vanShare=0;
+  ITEMS.forEach(it=>{const ta=it.room*RATE[it.cur]+(it.extra?it.extra*RATE[it.extraCur]:0);gT+=ta;gP+=it.paidRoom*RATE[it.cur];vanShare+=(it.vShare!=null?it.vShare:ta/2);});
+  const cards=ITEMS.map(it=>{
+    const totAud=it.room*RATE[it.cur]+(it.extra?it.extra*RATE[it.extraCur]:0);
+    const badge=it.paidRoom>=it.room?`<span class="paid-badge paid">✓ Room paid</span>`:it.paidRoom>0?`<span class="paid-badge owing">Part-paid</span>`:(it.when&&/cash/i.test(it.when))?`<span class="paid-badge cash">💰 Cash on arrival</span>`:`<span class="paid-badge owing">Room unpaid</span>`;
+    return`<div class="card cp" style="margin-bottom:9px">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:6px">
+        <div style="flex:1"><div style="font-size:13px;font-weight:600">${esc(it.name)}</div><div style="font-size:10.5px;color:var(--txL)">${esc(it.night)}</div></div>
+        <div style="text-align:right;flex-shrink:0"><div style="font-size:13px;font-weight:600">${fmt(it.cur,it.room)}</div><div style="margin-top:3px">${badge}</div></div>
+      </div>
+      <div style="font-size:11.5px;color:var(--txM);padding:5px 0;border-top:1px solid var(--bor)"><strong>Includes:</strong> ${esc(it.incl)}</div>
+      <div style="font-size:11.5px;color:var(--txM);padding:5px 0;border-top:1px solid var(--bor)"><strong>💳 Payment:</strong> ${esc(PAYINFO[it.id]||"")}</div>
+      ${it.note?`<div style="font-size:11px;color:var(--txL);font-style:italic;padding:5px 0;border-top:1px solid var(--bor)">${esc(it.note)}</div>`:""}
+      <div style="font-size:11.5px;color:var(--for);font-weight:600;padding-top:5px;border-top:1px solid var(--bor)">Vanessa's share ≈ ${aud(it.vShare!=null?it.vShare:totAud/2)}${it.vShare!=null?' (one night)':''}</div>
+    </div>`;}).join("");
+  const cashRows=CASH.map(r=>`<tr><td style="padding:5px 7px;border-bottom:1px solid var(--bor);font-weight:600;white-space:nowrap">${r.cur}</td><td style="padding:5px 7px;border-bottom:1px solid var(--bor);white-space:nowrap;font-weight:500">${esc(r.amt)}</td><td style="padding:5px 7px;border-bottom:1px solid var(--bor);color:var(--txM)">${esc(r.fr)}</td></tr>`).join("");
+  return`<div class="ptitle">Expenses</div>
+  <div style="font-size:13px;color:var(--txM);line-height:1.6;margin-bottom:12px">Shared with Vanessa: accommodation plus the trail meals, lunches and extras bundled into each bill. Split is 50/50 except Geneva, where Vanessa shares only the 23rd night (she leaves the 24th). Each place shows its own currency; the summary converts to AUD at approx rates (€1 = A$${RATE.EUR}, 1 CHF = A$${RATE.CHF}). Settle up on <strong>Beem</strong>.</div>
+  <div class="warn-box" style="margin-bottom:10px"><div class="w"><strong>⚠️ Disputed: €251 change fees</strong> kept by montourdumontblanc.com. Refund requested, so NOT counted below. If the refund fails it becomes a shared cost (½ = €125.50). Chase it up before departure.</div></div>
+  <div class="card cp" style="margin-bottom:10px">
+    <div class="serif" style="font-size:17px;font-weight:600;color:var(--for);margin-bottom:6px">Summary (AUD)</div>
+    <div class="budget-row"><div style="font-size:13px">Shared total (approx)</div><div class="b-amt" style="font-size:15px">${aud(gT)}</div></div>
+    <div class="budget-row"><div style="font-size:12.5px">Paid so far (Addy)</div><div class="b-amt" style="color:var(--ok)">${aud(gP)}</div></div>
+    <div class="budget-row"><div style="font-size:12.5px">Still to pay</div><div class="b-amt" style="color:var(--amb)">${aud(gT-gP)}</div></div>
+    <div class="budget-row"><div style="font-size:13px;font-weight:600">Vanessa's share (Beem)</div><div class="b-amt" style="font-weight:600">${aud(vanShare)}</div></div>
+    <div class="budget-row"><div style="font-size:12.5px">Addy's share</div><div class="b-amt">${aud(gT-vanShare)}</div></div>
+  </div>
+  <div class="card cp" style="margin-bottom:10px">
+    <div class="serif" style="font-size:15px;font-weight:600;color:var(--for);margin-bottom:6px">💶 Cash to carry</div>
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr style="text-align:left;color:var(--txL)"><th style="padding:5px 7px;border-bottom:1px solid var(--bor)">Cur</th><th style="padding:5px 7px;border-bottom:1px solid var(--bor)">Cash</th><th style="padding:5px 7px;border-bottom:1px solid var(--bor)">For</th></tr></thead>
+        <tbody>${cashRows}</tbody>
+      </table>
+    </div>
+    <div style="font-size:11px;color:var(--txL);margin-top:7px">Draw euros before the trek; get Swiss francs in Champex or Orsières. No ATM in Trient, and Bonatti has no card machine.</div>
+  </div>
+  <div style="font-size:11px;font-weight:600;color:var(--txL);margin:4px 0 6px;letter-spacing:.5px">EACH ACCOMMODATION, WHAT'S PAID &amp; WHAT'S INCLUDED</div>
+  ${cards}`;
+}
+
+// ── BIND ──────────────────────────────────────────────────────────────────────
+function bind(){
+  document.querySelectorAll(".nb[data-tab]").forEach(b=>b.addEventListener("click",()=>{S.tab=b.dataset.tab;S.activeJournal=null;render();}));
+  document.querySelectorAll("button[data-stage]").forEach(b=>b.addEventListener("click",()=>{const d=parseInt(b.dataset.stage);S.openStage=S.openStage===d?null:d;render();}));
+  document.querySelectorAll("input[data-ac]").forEach(i=>i.addEventListener("input",()=>{S.acNotes[i.dataset.ac]=i.value;save("tmb_acnotes",S.acNotes);}));
+  document.querySelectorAll(".gi[data-gear]").forEach(el=>el.addEventListener("click",()=>{const k=el.dataset.gear;S.gear[k]=!S.gear[k];save("tmb_gear",S.gear);render();}));
+  document.querySelectorAll(".todo-item[data-todo]").forEach(el=>el.addEventListener("click",()=>{const k=el.dataset.todo;S.todos[k]=!S.todos[k];save("tmb_todos",S.todos);render();}));
+  document.querySelectorAll("[data-jopen]").forEach(b=>b.addEventListener("click",()=>{const d=parseInt(b.dataset.jopen);S.activeJournal=d;S.jDraft[d]=S.journal[d]||"";render();}));
+  const jt=document.getElementById("jtext");
+  if(jt){
+    jt.addEventListener("input",e=>{S.jDraft[S.activeJournal]=e.target.value;});
+    document.getElementById("jback").addEventListener("click",()=>{S.activeJournal=null;render();});
+    document.getElementById("jcancel").addEventListener("click",()=>{S.activeJournal=null;render();});
+    document.getElementById("jsave").addEventListener("click",()=>{S.journal[S.activeJournal]=S.jDraft[S.activeJournal]||"";save("tmb_journal",S.journal);S.activeJournal=null;render();});
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+load();
+render();
+</script>
