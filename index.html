@@ -41,7 +41,8 @@ main{padding:13px;max-width:800px;margin:0 auto}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
 .sc{background:var(--sur);border:1px solid var(--bor);border-radius:10px;padding:12px;box-shadow:var(--shS)}
-.sv{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--for)}
+.sv{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--for);display:flex;align-items:baseline;gap:3px;flex-wrap:wrap;line-height:1.1}
+.sv .u{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;color:var(--txL);letter-spacing:.2px}
 .sl{font-size:10.5px;color:var(--txL);margin-top:2px}
 .mbar{height:5px;background:var(--bor);border-radius:3px;margin:5px 0 4px}
 .mfil{height:100%;border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1)}
@@ -498,7 +499,7 @@ function app(){
 function rOverview(){
   const pd=gDone(),pt=gTotal(),td=tDone(),tt=tTotal();
   return`<div class="g3" style="margin-bottom:12px">
-  ${[{v:"~157 km",l:"Total Distance"},{v:"+9,420 m",l:"Total Ascent"},{v:"3 countries",l:"FR · IT · CH"},{v:"10 days",l:"Trail Days"},{v:"11 nights",l:"Accommodation booked"},{v:"10 Sep",l:"SYD Departure"}].map(x=>`<div class="sc"><div class="sv">${x.v}</div><div class="sl">${x.l}</div></div>`).join("")}
+  ${[{v:"~157",u:"km",l:"Total Distance"},{v:"+9,420",u:"m",l:"Total Ascent"},{v:"3",u:"countries",l:"FR · IT · CH"},{v:"10",u:"days",l:"Trail Days"},{v:"11",u:"nights",l:"Accommodation booked"},{v:"10",u:"Sep",l:"SYD Departure"}].map(x=>`<div class="sc"><div class="sv">${x.v}<span class="u">${x.u}</span></div><div class="sl">${x.l}</div></div>`).join("")}
 </div>
 <div class="g2" style="margin-bottom:12px">
   ${[{l:"Gear packed",d:pd,t:pt,c:"var(--for)"},{l:"To-Dos done",d:td,t:tt,c:"var(--amb)"}].map(w=>`<div class="sc"><div style="font-size:11px;color:var(--txL);margin-bottom:5px">${w.l}</div><div class="mbar"><div class="mfil" style="width:${Math.min(100,(w.d/w.t)*100)}%;background:${w.c}"></div></div><div style="font-size:12px;font-weight:500;color:${w.c}">${w.d}/${w.t}</div></div>`).join("")}
@@ -537,7 +538,7 @@ function rOverview(){
 // Approximate elevation profiles [distance km, altitude m]: schematic from key waypoints; accurate track on AllTrails
 const ELEV={
   1:[[0,1007],[2,1800],[3.5,1720],[5.5,2120],[7,1900],[9,1650],[11,1550],[13,1400],[15,1300],[16.5,1220],[18,1164]],
-  2:[[0,1164],[2,1210],[4,1500],[6,1750],[8,2000],[10,2329],[11,2483],[12,2665],[13,2756],[14,2500],[16,2100],[18,1700],[20,1554]],
+  2:[[0,1164],[2,1210],[4,1500],[6,1750],[8,2000],[10,2329],[11,2483],[12,2665],[12.6,2756],[13.3,2655],[14,2500],[16,2100],[18,1700],[20,1554]],
   3:[[0,1554],[2,1650],[4,1850],[6,2100],[8,2350],[10.5,2516],[12,2250],[13.5,2000],[15,1970],[16.5,2200],[18,2430],[19,2200],[20,1700],[21,1224]],
   5:[[0,1224],[2,1600],[4,1989],[6,2300],[8,2584],[9.5,2400],[11,2200],[12.5,2100],[14,2056]],
   6:[[0,2056],[2,2150],[4,2250],[6,2400],[8,2500],[10,2537],[11.5,2350],[13,2150],[14.5,1950],[16,1800],[17.5,1700],[19,1650],[20.2,1600]],
@@ -628,6 +629,7 @@ function rStages(){
     const dueC=/^(none|prepaid|pay by)/i.test(inf.balance||"")?"var(--ok)":"var(--amb)";
     const atUrl=s.alltrails||("https://www.alltrails.com/explore?q="+encodeURIComponent(s.from+" to "+s.to+" Tour du Mont Blanc"));
     const pk=s.plans.find(p=>p.pref);
+    const _hrs=(s.time.match(/\d+/g)||[]).map(Number),maxH=_hrs.length?Math.max(..._hrs):0,longDay=!s.rest&&maxH>=8;
     return`<div class="card" style="margin-bottom:8px">
   <button class="srow" data-stage="${s.day}">
     <div class="dbage" style="width:27px;height:27px;border-radius:6px;background:${s.rest?"var(--sto)":dbg};display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:600;flex-shrink:0">${s.day}</div>
@@ -657,14 +659,12 @@ function rStages(){
       <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;margin-top:3px"><span style="color:var(--ok);font-weight:600">▲ ${s.gain}</span><span style="color:var(--txL);font-size:10px">Accurate track on AllTrails</span><span style="color:var(--it);font-weight:600">▼ ${s.loss}</span></div>
     </div>`:""}
     <div style="font-size:13px;line-height:1.65;color:var(--txM);margin-bottom:10px">${s.notes}</div>
+    ${longDay?`<div style="display:flex;align-items:flex-start;gap:7px;background:#FFF4E0;border:1px solid var(--ambL);border-radius:8px;padding:8px 11px;margin-bottom:10px;font-size:12px;color:var(--amb);font-weight:600;line-height:1.5">⏰ Long day — up to ${maxH} hrs on the move. Start early to keep a safety margin and finish before dark${st?`, and to reach ${esc(st.place)} in good time`:""}.</div>`:""}
     ${pk?`<div class="nbox" style="background:var(--surB);border:1.5px solid var(--for);margin-bottom:10px">
       <div class="nh" style="color:var(--for);font-size:11.5px">📍 Planned route${pk.label?" · "+esc(pk.label.replace(/^Planned:\s*/,"").replace(/^⭐[^:]*:\s*/,"")):""}</div>
       ${pk.tag?`<div style="margin:4px 0 0"><span style="font-size:9px;padding:1px 6px;border-radius:4px;background:${/scenic/i.test(pk.tag)?"#FBF0DA":"#E6F3EC"};color:${/scenic/i.test(pk.tag)?"var(--amb)":"var(--for)"};font-weight:600">${esc(pk.tag)}</span></div>`:""}
       <div class="nb2" style="margin-top:4px">${esc(pk.why)}</div>
-    </div>`:""}
-    ${VIA[s.day]?`<div style="margin-bottom:10px;padding:9px 11px;background:var(--surB);border:1px solid var(--bor);border-radius:8px">
-      <div style="font-size:10px;font-weight:600;color:var(--txL);letter-spacing:.5px;margin-bottom:4px">🧭 WHAT YOU PASS</div>
-      <div style="font-size:11.5px;color:var(--txM);line-height:1.7">${VIA[s.day].map(esc).join(' <span style="color:var(--ambL)">→</span> ')}</div>
+      ${VIA[s.day]?`<div style="margin-top:9px;padding-top:8px;border-top:1px solid var(--bor)"><div style="font-size:10px;font-weight:600;color:var(--txL);letter-spacing:.5px;margin-bottom:4px">🧭 WHAT YOU PASS</div><div style="font-size:11.5px;color:var(--txM);line-height:1.7">${VIA[s.day].map(esc).join(' <span style="color:var(--ambL)">→</span> ')}</div></div>`:""}
     </div>`:""}
     ${s.start?`<details class="sec"><summary>🚆 Getting to the start</summary><div class="secbody">${Array.isArray(s.start)?s.start.map((b,i)=>`<div style="padding:7px 0;${i?"border-top:1px solid var(--bor);":""}font-size:12px;line-height:1.55"><strong style="color:var(--txt)">${esc(b.l)}</strong> <span style="color:var(--txM)">${esc(b.d)}</span></div>`).join(""):`<div class="nb2">${esc(s.start)}</div>`}</div></details>`:""}
     ${s.restday?`<details class="sec"><summary>🧖 Rest day in Courmayeur — what to do</summary><div class="secbody">${s.restday.map(r=>`<div class="nbox" style="background:var(--surB)"><div class="nh" style="color:var(--for)">${esc(r.t)}</div><div class="nb2">${esc(r.d)}</div></div>`).join("")}</div></details>`:""}
@@ -902,9 +902,9 @@ function rTotals(){
   return`<div class="ptitle">📊 Trip Totals</div>
   <div style="font-size:13px;color:var(--txL);line-height:1.6;margin-bottom:12px">Totals for <strong>your chosen routes</strong> (the ✓ pick in each stage, scenic where selected). Taking the easier finishes on Days 1, 2, 5 and 9 instead would bring it down to roughly the classic ~152 km. ⭐ classic · 📸 most scenic.</div>
   <div class="g3" style="margin-bottom:12px">
-    <div class="sc"><div class="sv">~${tk.toFixed(0)} km</div><div class="sl">Total distance</div></div>
-    <div class="sc"><div class="sv">+${n(tg)} m</div><div class="sl">Total ascent</div></div>
-    <div class="sc"><div class="sv">−${n(tl)} m</div><div class="sl">Total descent</div></div>
+    <div class="sc"><div class="sv">~${tk.toFixed(0)}<span class="u">km</span></div><div class="sl">Total distance</div></div>
+    <div class="sc"><div class="sv">+${n(tg)}<span class="u">m</span></div><div class="sl">Total ascent</div></div>
+    <div class="sc"><div class="sv">−${n(tl)}<span class="u">m</span></div><div class="sl">Total descent</div></div>
   </div>
   <div class="card cp">
     <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">
@@ -987,8 +987,8 @@ function rSplit(){
   <div class="card cp" style="margin-bottom:10px">
     <div class="serif" style="font-size:15px;font-weight:600;color:var(--for);margin-bottom:6px">💶 Cash to carry</div>
     ${(()=>{const sum=cur=>CASH.filter(r=>r.cur===cur).reduce((a,r)=>a+(parseFloat(r.amt.replace(/[^0-9.]/g,""))||0),0);const eur=sum("EUR"),chf=sum("CHF");return`<div style="display:flex;gap:9px">
-      <div class="sc" style="flex:1;text-align:center"><div class="sv">~€${eur}</div><div class="sl">Euros · France + Italy</div></div>
-      <div class="sc" style="flex:1;text-align:center"><div class="sv">~${chf} CHF</div><div class="sl">Swiss francs</div></div>
+      <div class="sc" style="flex:1;text-align:center"><div class="sv" style="justify-content:center">~€${eur}</div><div class="sl">Euros · France + Italy</div></div>
+      <div class="sc" style="flex:1;text-align:center"><div class="sv" style="justify-content:center">~${chf}<span class="u">CHF</span></div><div class="sl">Swiss francs</div></div>
     </div>`;})()}
     <div style="font-size:11px;color:var(--txL);margin-top:7px">Draw euros before the trek; get Swiss francs in Champex or Orsières. No ATM in Trient, and Bonatti has no card machine.</div>
   </div>
