@@ -956,6 +956,14 @@ function rSplit(){
     </div>`;}).join("");
   const cashRows=CASH.map(r=>`<tr><td style="padding:5px 7px;border-bottom:1px solid var(--bor);font-weight:600;white-space:nowrap">${r.cur}</td><td style="padding:5px 7px;border-bottom:1px solid var(--bor);white-space:nowrap;font-weight:500">${esc(r.amt)}</td><td style="padding:5px 7px;border-bottom:1px solid var(--bor);color:var(--txM)">${esc(r.fr)}</td></tr>`).join("");
   return`<div class="ptitle">Expenses</div>
+  <div class="card cp" style="margin-bottom:12px">
+    <div class="serif" style="font-size:17px;font-weight:600;color:var(--for);margin-bottom:6px">Summary (AUD)</div>
+    <div class="budget-row"><div style="font-size:13px">Shared total (approx)</div><div class="b-amt" style="font-size:15px">${aud(gT)}</div></div>
+    <div class="budget-row"><div style="font-size:12.5px">Paid so far (Addy)</div><div class="b-amt" style="color:var(--ok)">${aud(gP)}</div></div>
+    <div class="budget-row"><div style="font-size:12.5px">Still to pay</div><div class="b-amt" style="color:var(--amb)">${aud(gT-gP)}</div></div>
+    <div class="budget-row"><div style="font-size:13px;font-weight:600">Vanessa's share (Beem)</div><div class="b-amt" style="font-weight:600">${aud(vanShare)}</div></div>
+    <div class="budget-row"><div style="font-size:12.5px">Addy's share</div><div class="b-amt">${aud(gT-vanShare)}</div></div>
+  </div>
   ${(()=>{
     const dU=iso=>{const t=new Date();t.setHours(0,0,0,0);return Math.round((new Date(iso+"T00:00:00")-t)/864e5);};
     const dL=iso=>new Date(iso+"T00:00:00").toLocaleDateString("en-AU",{day:"numeric",month:"short"});
@@ -976,21 +984,11 @@ function rSplit(){
   <div style="font-size:13px;color:var(--txM);line-height:1.6;margin-bottom:12px">Shared with Vanessa: accommodation plus the trail meals, lunches and extras bundled into each bill. Split is 50/50 except Geneva, where Vanessa shares only the 23rd night (she leaves the 24th). Each place shows its own currency; the summary converts to AUD at approx rates (€1 = A$${RATE.EUR}, 1 CHF = A$${RATE.CHF}). Settle up on <strong>Beem</strong>.</div>
   <div class="warn-box" style="margin-bottom:10px"><div class="w"><strong>⚠️ Disputed: €251 change fees</strong> kept by montourdumontblanc.com. Refund requested, so NOT counted below. If the refund fails it becomes a shared cost (½ = €125.50). Chase it up before departure.</div></div>
   <div class="card cp" style="margin-bottom:10px">
-    <div class="serif" style="font-size:17px;font-weight:600;color:var(--for);margin-bottom:6px">Summary (AUD)</div>
-    <div class="budget-row"><div style="font-size:13px">Shared total (approx)</div><div class="b-amt" style="font-size:15px">${aud(gT)}</div></div>
-    <div class="budget-row"><div style="font-size:12.5px">Paid so far (Addy)</div><div class="b-amt" style="color:var(--ok)">${aud(gP)}</div></div>
-    <div class="budget-row"><div style="font-size:12.5px">Still to pay</div><div class="b-amt" style="color:var(--amb)">${aud(gT-gP)}</div></div>
-    <div class="budget-row"><div style="font-size:13px;font-weight:600">Vanessa's share (Beem)</div><div class="b-amt" style="font-weight:600">${aud(vanShare)}</div></div>
-    <div class="budget-row"><div style="font-size:12.5px">Addy's share</div><div class="b-amt">${aud(gT-vanShare)}</div></div>
-  </div>
-  <div class="card cp" style="margin-bottom:10px">
     <div class="serif" style="font-size:15px;font-weight:600;color:var(--for);margin-bottom:6px">💶 Cash to carry</div>
-    <div style="overflow-x:auto">
-      <table style="width:100%;border-collapse:collapse;font-size:12px">
-        <thead><tr style="text-align:left;color:var(--txL)"><th style="padding:5px 7px;border-bottom:1px solid var(--bor)">Cur</th><th style="padding:5px 7px;border-bottom:1px solid var(--bor)">Cash</th><th style="padding:5px 7px;border-bottom:1px solid var(--bor)">For</th></tr></thead>
-        <tbody>${cashRows}</tbody>
-      </table>
-    </div>
+    ${(()=>{const sum=cur=>CASH.filter(r=>r.cur===cur).reduce((a,r)=>a+(parseFloat(r.amt.replace(/[^0-9.]/g,""))||0),0);const eur=sum("EUR"),chf=sum("CHF");return`<div style="display:flex;gap:9px">
+      <div class="sc" style="flex:1;text-align:center"><div class="sv">~€${eur}</div><div class="sl">Euros · France + Italy</div></div>
+      <div class="sc" style="flex:1;text-align:center"><div class="sv">~${chf} CHF</div><div class="sl">Swiss francs</div></div>
+    </div>`;})()}
     <div style="font-size:11px;color:var(--txL);margin-top:7px">Draw euros before the trek; get Swiss francs in Champex or Orsières. No ATM in Trient, and Bonatti has no card machine.</div>
   </div>
   <div style="font-size:11px;font-weight:600;color:var(--txL);margin:4px 0 6px;letter-spacing:.5px">EACH ACCOMMODATION, WHAT'S PAID &amp; WHAT'S INCLUDED</div>
