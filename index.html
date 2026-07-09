@@ -610,6 +610,7 @@ function rStages(){
     const inf=st?(STAYINFO[st.id]||{}):{};
     const dueC=/^(none|prepaid|pay by)/i.test(inf.balance||"")?"var(--ok)":"var(--amb)";
     const atUrl=s.alltrails||("https://www.alltrails.com/explore?q="+encodeURIComponent(s.from+" to "+s.to+" Tour du Mont Blanc"));
+    const pk=s.plans.find(p=>p.pref);
     return`<div class="card" style="margin-bottom:8px">
   <button class="srow" data-stage="${s.day}">
     <div class="dbage" style="width:27px;height:27px;border-radius:6px;background:${s.rest?"var(--sto)":dbg};display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:600;flex-shrink:0">${s.day}</div>
@@ -633,10 +634,16 @@ function rStages(){
       <div class="dcell"><div class="l">Max altitude</div><div class="v">${s.alt}</div></div>`}
     </div>
     <div style="font-size:13px;line-height:1.65;color:var(--txM);margin-bottom:10px">${s.notes}</div>
+    ${pk?`<div class="nbox" style="background:var(--surB);border:1.5px solid var(--for);margin-bottom:10px">
+      <div class="nh" style="color:var(--for);font-size:11.5px">📍 Planned route${pk.label?" · "+esc(pk.label.replace(/^Planned:\s*/,"").replace(/^⭐[^:]*:\s*/,"")):""}</div>
+      ${pk.tag?`<div style="margin:4px 0 0"><span style="font-size:9px;padding:1px 6px;border-radius:4px;background:${/scenic/i.test(pk.tag)?"#FBF0DA":"#E6F3EC"};color:${/scenic/i.test(pk.tag)?"var(--amb)":"var(--for)"};font-weight:600">${esc(pk.tag)}</span></div>`:""}
+      <div class="nb2" style="margin-top:4px">${esc(pk.why)}</div>
+    </div>`:""}
     ${s.start?`<details class="sec"><summary>🚆 Getting to the start</summary><div class="secbody">${Array.isArray(s.start)?s.start.map((b,i)=>`<div style="padding:7px 0;${i?"border-top:1px solid var(--bor);":""}font-size:12px;line-height:1.55"><strong style="color:var(--txt)">${esc(b.l)}</strong> <span style="color:var(--txM)">${esc(b.d)}</span></div>`).join(""):`<div class="nb2">${esc(s.start)}</div>`}</div></details>`:""}
     ${s.restday?`<details class="sec"><summary>🧖 Rest day in Courmayeur — what to do</summary><div class="secbody">${s.restday.map(r=>`<div class="nbox" style="background:var(--surB)"><div class="nh" style="color:var(--for)">${esc(r.t)}</div><div class="nb2">${esc(r.d)}</div></div>`).join("")}</div></details>`:""}
     ${!s.rest?`<a href="${atUrl}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--forM);text-decoration:none;border:1px solid var(--bor);background:var(--surB);border-radius:7px;padding:6px 11px;margin-bottom:10px">🥾 View route on AllTrails →</a>`:""}
     ${!s.rest&&ELEV[s.day]?`<details class="sec"><summary>📈 Elevation profile <span style="font-weight:400;color:var(--txL);font-size:11px">· approximate</span></summary><div class="secbody" style="padding-bottom:8px">
+      ${pk?`<div style="font-size:10.5px;color:var(--txL);margin-bottom:3px">${esc(pk.label.replace(/^Planned:\s*/,"").replace(/^⭐[^:]*:\s*/,""))} · peak ${esc(s.alt)}</div>`:""}
       ${elevSVG(s.day)}
       <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;margin-top:3px"><span style="color:var(--ok);font-weight:600">▲ ${s.gain}</span><span style="color:var(--txL);font-size:10px">Accurate track on AllTrails</span><span style="color:var(--it);font-weight:600">▼ ${s.loss}</span></div>
     </div></details>`:""}
