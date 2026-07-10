@@ -908,15 +908,13 @@ function rCamping(){
 • 3rd-person dinners you asked about (Courmayeur Days 3–4, Maya-Joie Day 6, La Grange Day 7, Trient Day 8): tell the property as soon as you know, at least 24–48 h ahead.<br>
 • Campsites below are turn-up, so no booking or cancellation needed there.<br>
 • Any shared hotel nights follow the free-cancel cutoffs in the Stays tab (Aiguille Verte 11 Aug, Gaï Soleil 13 Aug, Crampon 31 Aug, Geneva 21 Sep).</div></div>
-${CAMPING.map(c=>`<div class="card" style="margin-bottom:10px">
-  <div class="shdr">
-    <div>
-      <div style="font-weight:500;font-size:13px">Day ${c.day} · ${c.date} · ${c.loc}</div>
-      <div style="font-size:11px;color:var(--txL);margin-top:2px">Your stay: ${c.yourStay}</div>
+${CAMPING.map(c=>`<details class="sec" style="margin-bottom:9px"><summary style="align-items:flex-start">
+    <div style="flex:1;min-width:0">
+      <div style="font-size:13px;font-weight:600;color:var(--txt)">Day ${c.day} · ${c.date}</div>
+      <div style="font-size:11px;color:var(--txL);font-weight:400;margin-top:2px">${c.loc} · Your stay: ${c.yourStay}</div>
     </div>
     <div style="text-align:right;font-size:12px;font-weight:600;color:${dinC[c.din]||"var(--txL)"};flex-shrink:0;margin-left:8px">${c.din}</div>
-  </div>
-  <div class="cp" style="padding-top:10px">
+    </summary><div class="secbody">
     ${c.camp.startsWith("❌")?
     `<div style="background:#FFF0F0;border-radius:8px;padding:10px;font-size:12.5px;color:var(--it);font-weight:500">${c.camp}</div>
     ${c.note?`<div style="font-size:12px;color:var(--txM);margin-top:8px;font-style:italic">${c.note}</div>`:""}`:
@@ -934,7 +932,7 @@ ${CAMPING.map(c=>`<div class="card" style="margin-bottom:10px">
     </div>
     ${c.note?`<div style="font-size:12px;color:var(--txM);font-style:italic">${c.note}</div>`:""}`}
   </div>
-</div>`).join("")}`;
+</details>`).join("")}`;
 }
 
 // ── SPLIT (VANESSA) ───────────────────────────────────────────────────────────
