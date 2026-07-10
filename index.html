@@ -139,6 +139,8 @@ details.sec[open]>summary{border-bottom:1px solid var(--bor)}
 .secbody{padding:11px 13px 3px}
 </style>
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <div id="root"></div>
 <script>
 // ── DATA ─────────────────────────────────────────────────────────────────────
@@ -208,7 +210,7 @@ const STAGES = [
    escape:"No road reaches Bonatti, it is a footpath refuge. Bus 924 (Val Ferret line) from Courmayeur to the Bivio Rifugio Bonatti stop gets you to the valley floor, but the final ~1 hr climb is on foot. If you cannot manage it, phone the refuge to advise; for a real injury call 112 for mountain rescue. Confirm bus 924 is still running mid-September.",
    skip:"No dull stretch to skip, it's a short scenic balcony day. Arriva bus 924 up Val Ferret exists only as a bad-weather bail-out (confirm it still runs mid-Sept).",
    plans:[{grade:"Standard",tag:"⭐ TMB classic",label:"Planned: high balcony via Rifugio Bertone",dist:"≈12.3 km",gain:"+860 m",loss:"−101 m",time:"4–6 hrs",why:"The standard TMB balcony: climb to Rifugio Bertone and traverse the Mont de la Saxe flank with uninterrupted Grandes Jorasses views to Rifugio Bonatti."},{grade:"Harder",tag:"📸 Most scenic",pref:true,label:"Mont de la Saxe ridge (Testa della Tronche)",dist:"≈14 km (+~2 km)",gain:"+~1,360 m",loss:"−~600 m",time:"6–8 hrs",why:"One of the finest Mont Blanc panoramas on the whole TMB, a high ridge above the Bertone balcony. Extra climb and exposure, so start earlier and still check in at Bonatti by 18:45."},{grade:"Easier",tag:"Shortcut",label:"Low Val Ferret valley path",dist:"≈12 km (similar length)",gain:"+~450 m",loss:"−~100 m",time:"3–4 hrs",why:"Skip the high balcony and follow the flat valley floor if legs are tired, with just the short final climb up to the refuge. Less scenic but much gentler and quicker."}],
-   warns:["🥪 Order Day 6 packed lunch at Bonatti the night before (cash) — not yet arranged"]},
+   warns:[]},
   {day:6,date:"18 Sep",from:"Rifugio Bonatti",to:"La Fouly",dist:"20.2 km",gain:"+895 m",loss:"−1,410 m",time:"6–8 hrs",alt:"2,537 m",country:"CH",diff:5,
    notes:"Grand Col Ferret (2,537 m), the highest point of the entire TMB and the Switzerland border crossing. Long descent into La Fouly. Farewell Italy.",
    meals:{b:"Rifugio Bonatti",l:"⚠️ Order packed lunch AT Bonatti the night before, CASH only. Not yet arranged",d:"Auberge Maya-Joie, raclette valaisanne fixed menu, 18:45. Confirm dinner on arrival (~20€pp). Flag dietary needs"},
@@ -619,6 +621,41 @@ const VIA={
   9:["Trient","Col de Balme 2,191 m (into France)","Aiguillette des Posettes ridge","Tré-le-Champ"],
   10:["Tré-le-Champ","the ladders","Tête aux Vents","Lac Blanc 2,352 m","La Flégère","Grand Balcon Sud","Le Brévent 2,525 m","Refuge de Bellachat","Chamonix"]
 };
+// Schematic map of the TMB loop (self-contained SVG, works offline). Nodes in trek order.
+const MAPNODES=[
+  {n:"Les Houches",ll:[45.8906,6.7986]},
+  {n:"Les Contamines",ll:[45.8225,6.7275]},
+  {n:"Les Chapieux",ll:[45.6876,6.7712]},
+  {n:"Courmayeur",ll:[45.7969,6.9694]},
+  {n:"Rifugio Bonatti",ll:[45.8905,7.0246]},
+  {n:"La Fouly",ll:[45.9350,7.0960]},
+  {n:"Champex-Lac",ll:[46.0290,7.1130]},
+  {n:"Trient",ll:[46.0592,7.0063]},
+  {n:"Tré-le-Champ",ll:[46.0143,6.9247]},
+  {n:"Chamonix",ll:[45.9237,6.8694]}
+];
+const DAYSEG={1:[0,1],2:[1,2],3:[2,3],4:[3,3],5:[3,4],6:[4,5],7:[5,6],8:[6,7],9:[7,8],10:[8,9]};
+function loopMap(day){
+  const seg=DAYSEG[day]; if(!seg) return "";
+  const P=MAPNODES,a=seg[0],b=seg[1];
+  const trail=P.map((p,i)=>(i?"L":"M")+p.x+" "+p.y).join(" ");
+  const hl=a!==b?`<path d="M${P[a].x} ${P[a].y} L${P[b].x} ${P[b].y}" fill="none" stroke="var(--for)" stroke-width="3.6" stroke-linecap="round"/>`:"";
+  const dots=P.map((p,i)=>{const on=i===a||i===b;return `<circle cx="${p.x}" cy="${p.y}" r="${on?4.2:2.4}" fill="${on?"var(--for)":"#B7AE9C"}"${on?' stroke="#fff" stroke-width="1.2"':""}/>`;}).join("");
+  const lbl=i=>`<text x="${P[i].x+P[i].lx}" y="${P[i].y+P[i].ly}" text-anchor="${P[i].a}" font-size="8.5" font-weight="700" fill="var(--for)">${esc(P[i].n)}</text>`;
+  const labels=a===b?lbl(a):lbl(a)+lbl(b);
+  let arrow="";
+  if(a!==b){const mx=(P[a].x+P[b].x)/2,my=(P[a].y+P[b].y)/2,ang=Math.atan2(P[b].y-P[a].y,P[b].x-P[a].x)*180/Math.PI;arrow=`<path d="M-3.5 -3 L4 0 L-3.5 3 Z" fill="var(--for)" transform="translate(${mx.toFixed(1)} ${my.toFixed(1)}) rotate(${ang.toFixed(1)})"/>`;}
+  return`<svg viewBox="0 0 310 216" width="100%" style="display:block" role="img" aria-label="Schematic map of the Tour du Mont Blanc loop with today's leg highlighted">
+    <ellipse cx="150" cy="108" rx="60" ry="44" fill="#EEE9DE"/>
+    <text x="150" y="105" text-anchor="middle" font-size="10" font-weight="700" fill="#CBC1AB">Mont Blanc</text>
+    <text x="150" y="117" text-anchor="middle" font-size="7.5" fill="#CBC1AB">massif</text>
+    <text x="34" y="72" font-size="8" font-weight="700" fill="var(--fr)" opacity=".6">FR</text>
+    <text x="150" y="209" text-anchor="middle" font-size="8" font-weight="700" fill="var(--it)" opacity=".6">IT</text>
+    <text x="284" y="100" font-size="8" font-weight="700" fill="var(--ch)" opacity=".6">CH</text>
+    <path d="${trail}" fill="none" stroke="#D8CFBB" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+    ${hl}${arrow}${dots}${labels}
+  </svg>`;
+}
 function rStages(){
   return`<div class="ptitle">10-Day Trail Itinerary</div>`+
   STAGES.map(s=>{
@@ -640,7 +677,7 @@ function rStages(){
     <div style="display:flex;gap:6px;align-items:center">
       ${s.rest?`<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:var(--surB);color:var(--sto);font-weight:600">REST</span>`:
       `<span class="sbadge" style="background:${dbg}">${s.country}</span>
-      <span class="diff" style="color:${DK[s.diff]}">${DC[s.diff]}</span>`}
+      <span class="diff" style="color:${DK[s.diff]}">${DC[s.diff]}</span>${longDay?` <span title="Long day, ~${maxH} hrs — start early" style="font-size:11px">⏰</span>`:""}`}
       <span style="color:var(--txL);font-size:13px">${open?"▲":"▼"}</span>
     </div>
   </button>
@@ -652,6 +689,7 @@ function rStages(){
       <div class="dcell"><div class="l">Elevation loss</div><div class="v">${s.loss}</div></div>
       <div class="dcell"><div class="l">Max altitude</div><div class="v">${s.alt}</div></div>`}
     </div>
+    ${!s.rest?`<a href="${atUrl}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--forM);text-decoration:none;border:1px solid var(--bor);background:var(--surB);border-radius:7px;padding:7px 12px;margin-bottom:10px">🥾 View route on AllTrails →</a>`:""}
     ${!s.rest&&ELEV[s.day]?`<div style="background:var(--surB);border:1px solid var(--bor);border-radius:10px;padding:10px 12px 6px;margin-bottom:10px">
       <div style="font-size:10px;font-weight:600;color:var(--txL);letter-spacing:.5px;margin-bottom:2px">📈 ELEVATION PROFILE <span style="font-weight:400;text-transform:none">· approximate</span></div>
       ${pk?`<div style="font-size:10.5px;color:var(--txL);margin-bottom:3px">${esc(pk.label.replace(/^Planned:\s*/,"").replace(/^⭐[^:]*:\s*/,""))} · peak ${esc(s.alt)}</div>`:""}
@@ -659,16 +697,14 @@ function rStages(){
       <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;margin-top:3px"><span style="color:var(--ok);font-weight:600">▲ ${s.gain}</span><span style="color:var(--txL);font-size:10px">Accurate track on AllTrails</span><span style="color:var(--it);font-weight:600">▼ ${s.loss}</span></div>
     </div>`:""}
     <div style="font-size:13px;line-height:1.65;color:var(--txM);margin-bottom:10px">${s.notes}</div>
-    ${longDay?`<div style="display:flex;align-items:flex-start;gap:7px;background:#FFF4E0;border:1px solid var(--ambL);border-radius:8px;padding:8px 11px;margin-bottom:10px;font-size:12px;color:var(--amb);font-weight:600;line-height:1.5">⏰ Long day — up to ${maxH} hrs on the move. Start early to keep a safety margin and finish before dark${st?`, and to reach ${esc(st.place)} in good time`:""}.</div>`:""}
-    ${pk?`<div class="nbox" style="background:var(--surB);border:1.5px solid var(--for);margin-bottom:10px">
-      <div class="nh" style="color:var(--for);font-size:11.5px">📍 Planned route${pk.label?" · "+esc(pk.label.replace(/^Planned:\s*/,"").replace(/^⭐[^:]*:\s*/,"")):""}</div>
-      ${pk.tag?`<div style="margin:4px 0 0"><span style="font-size:9px;padding:1px 6px;border-radius:4px;background:${/scenic/i.test(pk.tag)?"#FBF0DA":"#E6F3EC"};color:${/scenic/i.test(pk.tag)?"var(--amb)":"var(--for)"};font-weight:600">${esc(pk.tag)}</span></div>`:""}
-      <div class="nb2" style="margin-top:4px">${esc(pk.why)}</div>
+    ${pk?`<details class="sec" open><summary>📍 Planned route${pk.label?" · "+esc(pk.label.replace(/^Planned:\s*/,"").replace(/^⭐[^:]*:\s*/,"")):""}</summary><div class="secbody">
+      ${DAYSEG[s.day]&&!s.rest?`<div style="margin-bottom:9px"><div class="stagemap" data-map="${s.day}" style="height:190px;border-radius:8px;overflow:hidden;background:var(--surB);border:1px solid var(--bor)"><div style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;color:var(--txL);padding:16px;line-height:1.5">🗺 Route map loads when you're online — the real trail is drawn on the map. Offline, use your downloaded maps or "View on AllTrails".</div></div><div style="font-size:9.5px;color:var(--txL);text-align:right;margin-top:3px">Real map · OpenStreetMap + Waymarked Trails hiking layer</div></div>`:""}
+      ${pk.tag?`<div style="margin:0 0 6px"><span style="font-size:9px;padding:1px 6px;border-radius:4px;background:${/scenic/i.test(pk.tag)?"#FBF0DA":"#E6F3EC"};color:${/scenic/i.test(pk.tag)?"var(--amb)":"var(--for)"};font-weight:600">${esc(pk.tag)}</span></div>`:""}
+      <div class="nb2">${esc(pk.why)}</div>
       ${VIA[s.day]?`<div style="margin-top:9px;padding-top:8px;border-top:1px solid var(--bor)"><div style="font-size:10px;font-weight:600;color:var(--txL);letter-spacing:.5px;margin-bottom:4px">🧭 WHAT YOU PASS</div><div style="font-size:11.5px;color:var(--txM);line-height:1.7">${VIA[s.day].map(esc).join(' <span style="color:var(--ambL)">→</span> ')}</div></div>`:""}
-    </div>`:""}
+    </div></details>`:""}
     ${s.start?`<details class="sec"><summary>🚆 Getting to the start</summary><div class="secbody">${Array.isArray(s.start)?s.start.map((b,i)=>`<div style="padding:7px 0;${i?"border-top:1px solid var(--bor);":""}font-size:12px;line-height:1.55"><strong style="color:var(--txt)">${esc(b.l)}</strong> <span style="color:var(--txM)">${esc(b.d)}</span></div>`).join(""):`<div class="nb2">${esc(s.start)}</div>`}</div></details>`:""}
     ${s.restday?`<details class="sec"><summary>🧖 Rest day in Courmayeur — what to do</summary><div class="secbody">${s.restday.map(r=>`<div class="nbox" style="background:var(--surB)"><div class="nh" style="color:var(--for)">${esc(r.t)}</div><div class="nb2">${esc(r.d)}</div></div>`).join("")}</div></details>`:""}
-    ${!s.rest?`<a href="${atUrl}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--forM);text-decoration:none;border:1px solid var(--bor);background:var(--surB);border-radius:7px;padding:6px 11px;margin-bottom:10px">🥾 View route on AllTrails →</a>`:""}
     ${s.warns.length?`<div class="warn-box"><div class="w">${s.warns.join("<br>")}</div></div>`:""}
     ${s.skip&&s.day!==1?`<details class="sec"><summary>✂️ Dull stretch you can skip</summary><div class="secbody"><div class="nb2">${esc(s.skip)}</div></div></details>`:""}
     ${s.plans.filter(p=>!p.pref).length?`<details class="sec"><summary>🧭 Other route options</summary><div class="secbody">
@@ -677,16 +713,19 @@ function rStages(){
     <details class="sec"><summary>🍽 Meals &amp; food stops</summary><div class="secbody">
     <div style="background:var(--surB);border-radius:8px;padding:2px 10px;margin-bottom:10px">
       <div class="mrow"><div class="mico" style="background:var(--amb)">B</div><div style="font-size:12.5px"><strong style="color:var(--txL);font-size:10px;display:block">BREAKFAST</strong>${esc(s.meals.b)}</div></div>
-      <div class="mrow"><div class="mico" style="background:var(--forM)">L</div><div style="font-size:12.5px"><strong style="color:var(--txL);font-size:10px;display:block">LUNCH</strong>${esc(s.meals.l)}</div></div>
       <div class="mrow"><div class="mico" style="background:var(--for)">D</div><div style="font-size:12.5px"><strong style="color:var(--txL);font-size:10px;display:block">DINNER</strong>${esc(s.meals.d)}</div></div>
     </div>
-    ${REFRESH[s.day]?`<div style="font-size:11px;font-weight:600;color:var(--txL);margin:12px 0 6px">☕ SNACK, COFFEE & LUNCH STOPS ON THE WAY</div>
+    <div style="font-size:11px;font-weight:600;color:var(--txL);margin:2px 0 6px">🥪 LUNCH</div>
     <div style="background:var(--surB);border-radius:8px;padding:8px 11px;margin-bottom:10px">
-      <div style="font-size:11.5px;color:var(--txM);margin-bottom:7px;padding:7px 9px;background:${REFRESH[s.day].lunch.indexOf('⚠️')===0?'#FFF4EC':'var(--sur)'};border:1px solid ${REFRESH[s.day].lunch.indexOf('⚠️')===0?'#E8A06A':'var(--bor)'};border-radius:6px">🥪 <strong>Lunch today:</strong> ${esc(REFRESH[s.day].lunch)}</div>
-      ${REFRESH[s.day].stops.map(t=>`<div style="padding:6px 0;border-bottom:1px solid var(--bor)"><div style="font-size:12.5px;font-weight:500">${esc(t.n)} <span style="font-weight:400;color:var(--txL);font-size:11px">· ${esc(t.at)}</span> ${t.meal?`<span style="font-size:9px;padding:1px 5px;border-radius:4px;background:#E6F3EC;color:var(--ok);font-weight:600">🍴 LUNCH</span>`:`<span style="font-size:9px;padding:1px 5px;border-radius:4px;border:1px solid var(--bor);color:var(--txL);font-weight:600">☕ SNACK</span>`}</div><div style="font-size:11.5px;color:var(--txM);margin-top:2px">${esc(t.f)}</div><div style="font-size:10.5px;color:var(--txL);margin-top:1px">🕐 ${esc(t.o)}${t.route?` · 🧭 ${esc(t.route)}`:''}</div></div>`).join("")}
-      <div style="font-size:11.5px;color:var(--txM);margin-top:7px">🛒 ${esc(REFRESH[s.day].buy)}</div>
-    </div>`:""}</div></details>
-    ${s.physio?`<details class="sec"><summary>⚕ Physio plan</summary><div class="secbody"><div class="nbox" style="background:#EDF2FF;margin-bottom:0"><div class="nb2">${s.physio}</div></div></div></details>`:""}
+      <div style="font-size:11.5px;color:var(--txM);line-height:1.5;padding:7px 9px;background:${(REFRESH[s.day]&&REFRESH[s.day].lunch.indexOf('⚠️')===0)?'#FFF4EC':'var(--sur)'};border:1px solid ${(REFRESH[s.day]&&REFRESH[s.day].lunch.indexOf('⚠️')===0)?'#E8A06A':'var(--bor)'};border-radius:6px">${esc(REFRESH[s.day]?REFRESH[s.day].lunch:s.meals.l)}</div>
+      ${REFRESH[s.day]&&REFRESH[s.day].stops.some(t=>t.meal)?`<div style="font-size:10px;font-weight:600;color:var(--txL);letter-spacing:.4px;margin:9px 0 2px">🍴 HOT-LUNCH STOPS ON THE WAY (options)</div>${REFRESH[s.day].stops.filter(t=>t.meal).map(t=>`<div style="padding:6px 0;border-bottom:1px solid var(--bor)"><div style="font-size:12.5px;font-weight:500">${esc(t.n)} <span style="font-weight:400;color:var(--txL);font-size:11px">· ${esc(t.at)}</span></div><div style="font-size:11.5px;color:var(--txM);margin-top:2px">${esc(t.f)}</div><div style="font-size:10.5px;color:var(--txL);margin-top:1px">🕐 ${esc(t.o)}${t.route?` · 🧭 ${esc(t.route)}`:''}</div></div>`).join("")}`:""}
+      ${REFRESH[s.day]?`<div style="font-size:11.5px;color:var(--txM);margin-top:7px">🛒 ${esc(REFRESH[s.day].buy)}</div>`:""}
+    </div>
+    ${REFRESH[s.day]&&REFRESH[s.day].stops.some(t=>!t.meal)?`<div style="font-size:11px;font-weight:600;color:var(--txL);margin:2px 0 6px">☕ SNACKS &amp; COFFEE ON THE WAY</div>
+    <div style="background:var(--surB);border-radius:8px;padding:2px 11px 4px;margin-bottom:10px">
+      ${REFRESH[s.day].stops.filter(t=>!t.meal).map(t=>`<div style="padding:6px 0;border-bottom:1px solid var(--bor)"><div style="font-size:12.5px;font-weight:500">${esc(t.n)} <span style="font-weight:400;color:var(--txL);font-size:11px">· ${esc(t.at)}</span></div><div style="font-size:11.5px;color:var(--txM);margin-top:2px">${esc(t.f)}</div><div style="font-size:10.5px;color:var(--txL);margin-top:1px">🕐 ${esc(t.o)}${t.route?` · 🧭 ${esc(t.route)}`:''}</div></div>`).join("")}
+    </div>`:""}
+    </div></details>
     ${st?`<details class="sec"><summary>🏨 Accommodation</summary><div class="secbody">
     <div style="background:var(--sur);border:1px solid var(--bor);border-radius:8px;padding:10px 12px;margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:5px">
@@ -714,25 +753,23 @@ function rStays(){
   const isPaid=s=>s.payBy==="PAID"||s.payBy==="CASH";
   const row=(l,v)=>v?`<div style="display:flex;gap:8px;padding:5px 0;border-top:1px solid var(--bor);font-size:11.5px"><div style="min-width:96px;color:var(--txL);flex-shrink:0">${l}</div><div style="flex:1;color:var(--txM)">${esc(v)}</div></div>`:"";
   return`<div class="ptitle">Accommodation Tracker</div>`+
-  STAYS.map(s=>`<div class="card cp" style="margin-bottom:9px">
-  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-    <div style="flex:1;margin-right:8px">
-      <div style="font-size:13px;font-weight:500">${s.place}</div>
-      <div style="font-size:11px;color:var(--txL);margin-top:2px">${s.night} · ${s.loc} · ${s.type}</div>
+  STAYS.map(s=>{
+    const badge=s.payBy==="PAID"?`<span class="paid-badge paid">✓ Paid</span>`:s.payBy==="CASH"?`<span class="paid-badge cash">💰 Cash</span>`:`<span class="paid-badge owing">Due: ${s.payBy}</span>`;
+    const i=STAYINFO[s.id];
+    return`<details class="sec" style="margin-bottom:9px"><summary style="align-items:flex-start">
+    <div style="flex:1;min-width:0">
+      <div style="font-size:13px;font-weight:600;color:var(--txt)">${s.place}</div>
+      <div style="font-size:11px;color:var(--txL);font-weight:400;margin-top:2px">${s.night} · ${s.loc} · ${s.type}</div>
     </div>
     <div style="text-align:right;flex-shrink:0">
-      <div style="font-size:13px;font-weight:500;color:var(--txt)">${s.cost}</div>
-      <div style="margin-top:4px">
-        ${s.payBy==="PAID"?`<span class="paid-badge paid">✓ Paid</span>`:
-          s.payBy==="CASH"?`<span class="paid-badge cash">💰 Cash</span>`:
-          `<span class="paid-badge owing">Due: ${s.payBy}</span>`}
-      </div>
-      ${s.paid&&s.paid!=="–"&&s.paid!=="💰 Cash on arrival"?`<div style="font-size:10.5px;color:var(--ok);margin-top:2px">Paid: ${s.paid}</div>`:""}
+      <div style="font-size:12.5px;font-weight:600;color:var(--txt)">${s.cost}</div>
+      <div style="margin-top:3px">${badge}</div>
+      ${s.paid&&s.paid!=="–"&&s.paid!=="💰 Cash on arrival"?`<div style="font-size:10px;color:var(--ok);font-weight:400;margin-top:2px">Paid: ${s.paid}</div>`:""}
     </div>
-  </div>
-  ${(i=>i?`<div style="margin:2px 0 9px">${row("🛏 Room",i.room)}${row("🍽 Board",i.board)}${row("💳 Payment",PAYINFO[s.id]||i.balance)}${row("🥪 Lunch",i.lunch)}${row("🛌 Silk liner",i.liner)}${row("🧺 Towels",i.towels)}${row("📶 Wifi / signal",i.wifi)}${row("🚿 Shower",i.shower)}${row("🕒 Check-in",i.checkin)}${row("💳 Pay method",i.pay)}${row("📞 Contact",i.contact)}${row("📧 Email",(BOOK[s.id]||{}).email)}${row("📇 Booked via",(BOOK[s.id]||{}).src)}${row("📝 Notes",i.extra)}</div>`:"")(STAYINFO[s.id])}
-  <input class="inp" placeholder="Confirmation number / notes…" value="${esc(S.acNotes[s.id]||"")}" data-ac="${s.id}">
-</div>`).join("")+
+    </summary><div class="secbody">
+    ${i?`<div style="margin-bottom:6px">${row("🛏 Room",i.room)}${row("🍽 Board",i.board)}${row("💳 Payment",PAYINFO[s.id]||i.balance)}${row("🥪 Lunch",i.lunch)}${row("🛌 Silk liner",i.liner)}${row("🧺 Towels",i.towels)}${row("📶 Wifi / signal",i.wifi)}${row("🚿 Shower",i.shower)}${row("🕒 Check-in",i.checkin)}${row("💳 Pay method",i.pay)}${row("📞 Contact",i.contact)}${row("📧 Email",(BOOK[s.id]||{}).email)}${row("📇 Booked via",(BOOK[s.id]||{}).src)}${row("📝 Notes",i.extra)}</div>`:""}
+    <input class="inp" placeholder="Confirmation number / notes…" value="${esc(S.acNotes[s.id]||"")}" data-ac="${s.id}">
+    </div></details>`;}).join("")+
 `<div class="card cp" style="margin-top:4px">
   <div class="serif" style="font-size:16px;font-weight:600;color:var(--for);margin-bottom:11px">Budget &amp; Balances</div>
   <div style="font-size:11px;font-weight:600;color:var(--txL);margin-bottom:6px;letter-spacing:1px">TMB PACKAGE · ORDER 4289941 (DAYS 2, 6, 7, 9)</div>
@@ -1229,6 +1266,23 @@ function bind(){
   document.querySelectorAll(".gi[data-gear]").forEach(el=>el.addEventListener("click",()=>{const k=el.dataset.gear;S.gear[k]=!S.gear[k];save("tmb_gear",S.gear);render();}));
   document.querySelectorAll(".todo-item[data-todo]").forEach(el=>el.addEventListener("click",()=>{const k=el.dataset.todo;S.todos[k]=!S.todos[k];save("tmb_todos",S.todos);render();}));
   document.querySelectorAll("[data-train]").forEach(el=>el.addEventListener("click",()=>{const id=el.dataset.train,max=parseInt(el.dataset.max)||1;S.train[id]=((S.train[id]||0)+1)%(max+1);save("tmb_train",S.train);render();}));
+  document.querySelectorAll(".stagemap[data-map]").forEach(el=>{
+    if(!window.L)return;
+    const seg=DAYSEG[+el.dataset.map]; if(!seg||seg[0]===seg[1])return;
+    el.innerHTML="";
+    try{
+      const A=MAPNODES[seg[0]].ll,B=MAPNODES[seg[1]].ll;
+      const map=L.map(el,{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false,boxZoom:false,keyboard:false,touchZoom:false,tap:false});
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:17}).addTo(map);
+      L.tileLayer("https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png",{maxZoom:18,opacity:.85}).addTo(map);
+      const grp=L.featureGroup([
+        L.circleMarker(A,{radius:7,color:"#fff",weight:2,fillColor:"#1C3828",fillOpacity:1}),
+        L.circleMarker(B,{radius:7,color:"#fff",weight:2,fillColor:"#9B2525",fillOpacity:1})
+      ]).addTo(map);
+      map.fitBounds(grp.getBounds().pad(0.45));
+      setTimeout(()=>map.invalidateSize(),80);
+    }catch(e){}
+  });
   document.querySelectorAll("[data-jopen]").forEach(b=>b.addEventListener("click",()=>{const d=parseInt(b.dataset.jopen);S.activeJournal=d;S.jDraft[d]=S.journal[d]||"";render();}));
   const jt=document.getElementById("jtext");
   if(jt){
