@@ -501,7 +501,7 @@ function app(){
 function rOverview(){
   const pd=gDone(),pt=gTotal(),td=tDone(),tt=tTotal();
   return`<div class="g3" style="margin-bottom:12px">
-  ${[{v:"~157",u:"km",l:"Total Distance"},{v:"+9,420",u:"m",l:"Total Ascent"},{v:"3",u:"countries",l:"FR · IT · CH"},{v:"10",u:"days",l:"Trail Days"},{v:"11",u:"nights",l:"Accommodation booked"},{v:"10",u:"Sep",l:"SYD Departure"}].map(x=>`<div class="sc"><div class="sv">${x.v}<span class="u">${x.u}</span></div><div class="sl">${x.l}</div></div>`).join("")}
+  ${[{v:"~161",u:"km",l:"Total Distance"},{v:"+10,217",u:"m",l:"Total Ascent"},{v:"3",u:"countries",l:"FR · IT · CH"},{v:"10",u:"days",l:"Trail Days"},{v:"11",u:"nights",l:"Accommodation booked"},{v:"10",u:"Sep",l:"SYD Departure"}].map(x=>`<div class="sc"><div class="sv">${x.v}<span class="u">${x.u}</span></div><div class="sl">${x.l}</div></div>`).join("")}
 </div>
 <div class="g2" style="margin-bottom:12px">
   ${[{l:"Gear packed",d:pd,t:pt,c:"var(--for)"},{l:"To-Dos done",d:td,t:tt,c:"var(--amb)"}].map(w=>`<div class="sc"><div style="font-size:11px;color:var(--txL);margin-bottom:5px">${w.l}</div><div class="mbar"><div class="mfil" style="width:${Math.min(100,(w.d/w.t)*100)}%;background:${w.c}"></div></div><div style="font-size:12px;font-weight:500;color:${w.c}">${w.d}/${w.t}</div></div>`).join("")}
@@ -944,7 +944,7 @@ ${CAMPING.map(c=>`<div class="card" style="margin-bottom:10px">
 // ── SPLIT (VANESSA) ───────────────────────────────────────────────────────────
 function rTotals(){
   const T=[
-    {d:1,r:"Les Houches → Les Contamines · Col de Tricot 📸",km:18,g:1050,l:1050},
+    {d:1,r:"Les Houches → Les Contamines · Col de Tricot (full walk) 📸",km:22,g:1850,l:1050},
     {d:2,r:"Les Contamines → Les Chapieux · Col des Fours 📸",km:20,g:1500,l:1100},
     {d:3,r:"Les Chapieux → Courmayeur · Mont Favre ⭐📸",km:21,g:1300,l:1650},
     {d:4,r:"Courmayeur, rest day",km:0,g:0,l:0,rest:true},
@@ -973,7 +973,7 @@ function rTotals(){
       <tbody>${rows}<tr style="font-weight:700"><td style="padding:7px"></td><td style="padding:7px">Trip total</td><td style="padding:7px;text-align:right;font-variant-numeric:tabular-nums">~${tk.toFixed(0)} km</td><td style="padding:7px;text-align:right;color:var(--ok);font-variant-numeric:tabular-nums">+${n(tg)}</td><td style="padding:7px;text-align:right;color:var(--it);font-variant-numeric:tabular-nums">−${n(tl)}</td></tr></tbody>
     </table></div>
   </div>
-  <div style="font-size:11px;color:var(--txL);margin-top:8px">Distances and elevations are approximate. Your scenic-pick route (~157 km) sits between the classic lower-variant line (~152 km) and the full standard TMB (~168 km). Change any stage's pick and this shifts.</div>`;
+  <div style="font-size:11px;color:var(--txL);margin-top:8px">Distances and elevations are approximate. Your scenic-pick route (~161 km) sits between the classic lower-variant line (~152 km) and the full standard TMB (~168 km). Change any stage's pick and this shifts.</div>`;
 }
 
 function rSplit(){
